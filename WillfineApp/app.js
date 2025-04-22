@@ -9,7 +9,7 @@ let cameras = [];
 
 // Datenbank- und SMS-Manager
 // let dbManager;
-let smsManager;
+// let smsManager;
 
 // PWA-Funktionalität
 let deferredPrompt;
