@@ -454,3 +454,10 @@ body.batch-mode .camera-checkbox {
 .camera-list-item:hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
+
+.banner-logo {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
