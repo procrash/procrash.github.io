@@ -94,11 +94,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 		  if (!cam) continue;
 
 		  switch (action) {
-			case 'photo':
-			  // foto anfordern
-			  await requestPhoto(cam);
-			  break;
-			case 'settings':
+		  case 'photo':
+			// BEGINN Patch hier
+			// 1. Sammle alle Nummern der selektierten Kameras
+			const phones = Array.from(selectedIds)
+			  .map(id => {
+				const cam = cameras.find(c => c.id === id);
+				return cam && cam.phone;
+			  })
+			  .filter(Boolean);
+
+			if (phones.length) {
+			  // 2. Baue den sms:-Link (iOS/neuere Androids mit Komma getrennt)
+			  const recipients = phones.join(',');
+			  const smsLink = `sms:${recipients}?body=${encodeURIComponent('PHOTO')}`;
+
+			  // 3a. Direkt öffnen:
+			  window.location.href = smsLink;
+
+			  // — oder —
+			  // 3b. In einen <a id="batchSmsLink"> schreiben:
+			  // document.getElementById('batchSmsLink').href = smsLink;
+			}
+			// ENDE Patch
+			break;
+		case 'settings':
 			  // öffne Einstellungen‑Modal für alle Kameras nacheinander
 			  openSettingsModal(cam);
 			  break;
