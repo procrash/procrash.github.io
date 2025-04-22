@@ -274,14 +274,57 @@ function buildSmsCommand(type) {
   }
 }
 
-// Settings-Formulardaten auslesen
+// Settings-Formulardaten auslesen (null‑sicher)
 function getSettingsFromForm() {
-  return {
-    smsControl: document.getElementById('smsControl').value,
-    captureMode: document.getElementById('captureMode').value,
-    burstImages: document.getElementById('burstImages').value
-    // weitere Felder...
-  };
+  const form = {};
+  const fields = [
+    'smsControl',
+    'imageSize',
+    'statusTime',
+    'statusReportSwitch',
+    'maxCount',
+    'maxCountSwitch',
+    'mmsControlSwitch',
+    'smtpSwitch',
+    'ftpMode',
+    'sendImageSwitch',
+    'sendVideoSwitch',
+    'captureMode',
+    'nightMode',
+    'imageResolution',
+    'videoResolution',
+    'pirSensitivity',
+    'flashLed',
+    'videoDuration',
+    'hourSystem',
+    'burstImages',
+    'motionSensorSwitch',
+    'sdCycleSwitch',
+    'timer1Switch',
+    'timer1Start',
+    'timer1End',
+    'timer2Switch',
+    'timer2Start',
+    'timer2End',
+    'delaySwitch',
+    'delayTime',
+    'timelapseSwitch',
+    'timelapseTime',
+    'phone1',
+    'email1'
+  ];
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;           // existiert nicht → überspringen
+    if (el.type === 'checkbox') {
+      form[id] = el.checked;
+    } else {
+      form[id] = el.value;
+    }
+  });
+
+  return form;
 }
 
 // SMS-Vorschau aktualisieren
