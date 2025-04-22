@@ -1,8 +1,5 @@
 /**
  * Service Worker für die Wildkamera SMS-Steuerung PWA
- */
-
-const CACHE_NAME = 'wildkamera-cache-v1';
 const ASSETS = [
   '/',
   '/index.html',
@@ -22,6 +19,39 @@ const ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js',
   'https://fonts.googleapis.com/icon?family=Material+Icons'
 ];
+
+ */
+
+const CACHE_NAME = 'wildkamera-cache-v1';
+
+const ASSETS = [
+  '/',
+  '/index.html',
+  '/styles.css',
+  '/styles-css.css',
+  '/styles-extensions.css',
+  '/app.js',
+  '/camera-settings.js',
+  '/config.js',
+  '/db-manager.js',
+  '/offline-html.html',
+  '/offline-sync-manager.js',
+  '/sms-commands.js',
+  '/sms-manager.js',
+  '/sync-manager.js',
+  '/ui-extensions.js',
+  '/wildkamera-icon.svg',
+  '/manifest.json',
+  '/icons/favicon.png',
+  '/icons/favicon.ico',
+  '/icons/icon-144x144.png',
+  '/icons/icon-192x192.png',
+  // Externe Ressourcen zum Cachen (optional)
+  'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
+  'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js',
+  'https://fonts.googleapis.com/icon?family=Material+Icons'
+];
+
 
 // Service Worker Installation
 self.addEventListener('install', event => {
