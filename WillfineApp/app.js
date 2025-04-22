@@ -237,7 +237,7 @@ function updateBatchBar() {
   if (count > 0) {
     bar.classList.remove('hide');
     document.getElementById('batchCount').textContent =
-      `${count} Kamera${count>1?'n':''} ausgewählt`;
+      `${count} Kamera${count>1?'s':''} ausgewählt`;
   } else {
     bar.classList.add('hide');
     batchMode = false;
