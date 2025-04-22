@@ -123,7 +123,7 @@ async function saveCamera() {
 
   try {
     if (!currentCameraId) {
-      const cam = { id: Date.now().toString(), name, phone, type: document.getElementById('cameraType').value };
+      const cam = { id: Date.now().toString(), name, phone };
       await dbManager.saveCamera(cam);
       cameras.push(cam);
       M.toast({ html: 'Kamera hinzugefügt', classes: 'toast-success' });
@@ -214,8 +214,6 @@ function openRenameModal(camera) {
   document.getElementById('modalTitle').textContent = 'Kamera umbenennen';
   document.getElementById('cameraName').value  = camera.name;
   document.getElementById('cameraPhone').value = camera.phone;
-  M.FormSelect.init(document.getElementById('cameraType'));
-  M.updateTextFields();
   M.Modal.getInstance(document.getElementById('cameraModal')).open();
 }
 
@@ -224,6 +222,11 @@ async function requestPhoto(camera) {
   const smsText = cameraSettings.buildSmsCommand('photo');
   const sent = await smsManager.sendSms(camera.phone, smsText, camera.id);
   M.toast({ html: sent ? 'Foto angefordert' : 'Fehler beim Anfordern', classes: sent ? 'toast-success' : 'toast-error' });
+}
+
+// Einstellungen senden
+async function sendSettings() {
+  return cameraSettings.sendSettings();
 }
 
 // Kamera löschen
