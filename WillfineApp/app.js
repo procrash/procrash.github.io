@@ -80,8 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-});
-
 // Materialize Komponenten initialisieren
 function initMaterializeComponents() {
   M.Modal.init(document.querySelectorAll('.modal'));
