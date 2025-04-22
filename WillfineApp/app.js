@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const batchBar = document.getElementById('batchActionBar');
 
 	base = ""
-	bsetSet = false
+	basetSet = false
 	
 	batchBar.querySelectorAll('.batch-action').forEach(btn => {
 	  btn.addEventListener('click', async e => {
