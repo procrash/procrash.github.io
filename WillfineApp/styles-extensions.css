@@ -406,3 +406,51 @@ body.batch-mode .camera-checkbox {
 .camera-action:active {
     transform: scale(0.95);
 }
+
+
+/* Kompakte, einzeilige Kameraliste */
+.camera-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.camera-list-header {
+  display: flex;
+  align-items: center;
+  flex: 1; /* füllt den Hauptbereich */
+}
+
+.camera-icon {
+  margin-right: 12px;
+}
+
+.camera-info {
+  display: flex;
+  flex-direction: column;
+  margin-right: 16px;
+  font-size: 0.95rem;
+}
+
+.camera-name {
+  margin: 0;
+  font-weight: 500;
+}
+
+.camera-phone {
+  margin: 0;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.camera-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Optional: Hover‑Feedback */
+.camera-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
