@@ -468,7 +468,7 @@ body.batch-mode .camera-checkbox {
 
 /* Hebt selektierte Kamerazeile hervor */
 .camera-list-item.selected {
-  background-color: rgba(76, 175, 80, 0.1);
+  background-color: rgba(76, 175, 80, 0.3);
 }
 
 
@@ -476,11 +476,6 @@ body.batch-mode .camera-checkbox {
 .camera-list-item {
   position: relative;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.camera-list-item.selected {
-  background-color: rgba(76, 175, 80, 0.3);    /* hellgrüner Hintergrund */
-  box-shadow: inset 4px 0 0 0 var(--primary-color); /* fetter Streifen links */
 }
 
 
