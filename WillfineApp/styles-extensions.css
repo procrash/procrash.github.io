@@ -479,19 +479,10 @@ body.batch-mode .camera-checkbox {
 }
 
 .camera-list-item.selected {
-  background-color: rgba(76, 175, 80, 0.1);    /* hellgrüner Hintergrund */
+  background-color: rgba(76, 175, 80, 0.3);    /* hellgrüner Hintergrund */
   box-shadow: inset 4px 0 0 0 var(--primary-color); /* fetter Streifen links */
 }
 
-/* ✓-Icon oben rechts einblenden */
-.camera-list-item.selected::after {
-  content: '✓';
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  font-size: 1.2rem;
-  color: var(--primary-color);
-}
 
 /* Hover-Effekt, wenn nicht selektiert */
 .camera-list-item:not(.selected):hover {
