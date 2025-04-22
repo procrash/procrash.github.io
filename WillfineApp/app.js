@@ -8,7 +8,7 @@ let currentCameraId = null;
 let cameras = [];
 
 // Datenbank- und SMS-Manager
-let dbManager;
+// let dbManager;
 let smsManager;
 
 // PWA-Funktionalität
