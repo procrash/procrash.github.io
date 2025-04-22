@@ -52,6 +52,7 @@
     <div class="navbar-fixed">
       <nav>
         <div class="nav-wrapper">
+          <a href="#" class="brand-logo center"><img src="icons/banner.png" alt="Jagdlogo Banner" class="banner-logo"></a>
           <ul id="nav-mobile" class="right">
             <li><a href="#" id="installButton" class="hide"><i class="material-icons">get_app</i></a></li>
           </ul>
@@ -143,10 +144,95 @@
           <li class="tab col s4"><a href="#timerSettings">Zeitplan</a></li>
         </ul>
       </div>
-      <div id="generalSettings" class="settings-panel"> <!-- Inhalte ähnlich vorher -->
-        <!-- ... -->
-      </div>
-      <div id="cameraSettings" class="settings-panel"> <!-- Inhalte ähnlich vorher -->
+      <div id="generalSettings" class="settings-panel">
+                <!-- Allgemeine Einstellungen -->
+                <div class="setting-row">
+                    <span class="setting-label">SMS Fernsteuerung</span>
+                    <div class="setting-control">
+                        <select id="smsControl">
+                            <option value="Sofort">Sofort</option>
+                            <option value="Täglich">Täglich</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">Bildgröße</span>
+                    <div class="setting-control">
+                        <select id="imageSize">
+                            <option value="Original">Original</option>
+                            <option value="HD">HD</option>
+                            <option value="Klein">Klein</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">Statusbericht</span>
+                    <div class="setting-control">
+                        <input id="statusTime" type="text" class="timepicker">
+                    </div>
+                    <div class="switch">
+                        <label>
+                            <input type="checkbox" id="statusReportSwitch">
+                            <span class="lever"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">Max. Anzahl</span>
+                    <div class="setting-control">
+                        <input id="maxCount" type="text" value="Kein Limit">
+                    </div>
+                    <div class="switch">
+                        <label>
+                            <input type="checkbox" id="maxCountSwitch">
+                            <span class="lever"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">MMS Fernsteuerung</span>
+                    <div class="switch">
+                        <label>
+                            <input type="checkbox" id="mmsControlSwitch">
+                            <span class="lever"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">SMTP</span>
+                    <div class="switch">
+                        <label>
+                            <input type="checkbox" id="smtpSwitch" checked>
+                            <span class="lever"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">FTP Modus</span>
+                    <div class="setting-control">
+                        <select id="ftpMode">
+                            <option value="AUS">AUS</option>
+                            <option value="FTP">FTP</option>
+                            <option value="FTPS">FTPS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <h6>Empfänger</h6>
+                <div class="setting-row">
+                    <span class="setting-label">Telefon</span>
+                    <div class="setting-control">
+                        <input id="phone1" type="tel">
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">Email</span>
+                    <div class="setting-control">
+                        <input id="email1" type="email">
+                    </div>
+                </div>
+            </div>
+            <div id="cameraSettings" class="settings-panel"> <!-- Inhalte ähnlich vorher -->
         <!-- ... -->
       </div>
       <div id="timerSettings" class="settings-panel"> <!-- Inhalte ähnlich vorher -->
