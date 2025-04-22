@@ -83,10 +83,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	// ganz unten in Deinem DOMContentLoaded‑Callback
 	const batchBar = document.getElementById('batchActionBar');
+
 	base = ""
-	if (btn.dataset.action=="rename") {
-		base = prompt('Basis‑Name für alle Kameras');
-	}
+	bsetSet = false
 	
 	batchBar.querySelectorAll('.batch-action').forEach(btn => {
 	  btn.addEventListener('click', async e => {
@@ -126,7 +125,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 			break;
 
 		  case 'rename':
-			// const base = prompt('Basis‑Name für alle Kameras');
+			if (baseSet==false) {
+				base = prompt('Basis‑Name für alle Kameras');
+			}
+			baseSet = true
+			
 			if (base) {
 			  let i = 1;
 			  for (const id of ids) {
