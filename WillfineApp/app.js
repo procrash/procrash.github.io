@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('batchActionBar').classList.add('hide');
 
   // **Hier** ganz unten die Batch‑Actions einhängen:
+  /*
   document.getElementById('openBatchSettings')
     .addEventListener('click', () => {
       const ids = Array.from(selectedIds);
@@ -78,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
       M.Modal.getInstance(document.getElementById('settingsModal')).open();
     });
-
+	*/
 
 	// ganz unten in Deinem DOMContentLoaded‑Callback
 	const batchBar = document.getElementById('batchActionBar');
