@@ -31,6 +31,15 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.4);
     }
+    /* Logo in der Mitte */
+    .brand-logo img.banner-logo {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
     .navbar-fixed .nav-wrapper {
       background: transparent;
       box-shadow: none;
@@ -41,9 +50,16 @@
 <body>
   <!-- Banner-Header -->
   <header>
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo center"><img src="icons/banner.png" alt="Jagdlogo Banner" class="banner-logo"></a>
           <ul id="nav-mobile" class="right">
             <li><a href="#" id="installButton" class="hide"><i class="material-icons">get_app</i></a></li>
           </ul>
+        </div>
+      </nav>
+    </div>
   </header>
 
   <!-- Main Content -->
@@ -76,6 +92,17 @@
     </div>
   </main>
 
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <a href="#" class="bottom-nav-item active" id="navCameras">
+      <i class="material-icons">photo_camera</i>
+      <span class="bottom-nav-label">Kameras</span>
+    </a>
+    <a href="#" class="bottom-nav-item" id="navSettings" onclick="openSettingsModal(cameras[0]); return false;">
+      <i class="material-icons">settings</i>
+      <span class="bottom-nav-label">Einstellungen</span>
+    </a>
+  </div>
 
   <!-- Kamera hinzufügen/bearbeiten Modal -->
   <div id="cameraModal" class="modal modal-fixed-footer">

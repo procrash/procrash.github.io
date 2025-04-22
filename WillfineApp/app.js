@@ -133,7 +133,6 @@ function addCameraToUI(camera) {
   const item = document.createElement('div'); item.className = 'camera-list-item'; item.dataset.id = camera.id;
   item.innerHTML = `
     <div class="camera-list-header">
-      <i class="material-icons camera-icon">photo_camera</i>
       <div class="camera-info">
         <h5 class="camera-name">${camera.name}</h5>
       </div>
