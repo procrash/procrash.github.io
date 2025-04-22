@@ -56,18 +56,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   document.getElementById('batchActionBar').classList.add('hide');
 
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const dbManager   = window.dbManager;
-  const smsManager  = window.smsManager;
-  const syncManager = window.syncManager;
-
-  initMaterializeComponents();
-  setupEventListeners();
-  await loadCameras();
-  await syncManager.checkPendingSMS();
-  syncManager.setupNetworkStatus();
-
   // **Hier** ganz unten die Batch‑Actions einhängen:
   document.getElementById('openBatchSettings')
     .addEventListener('click', () => {
