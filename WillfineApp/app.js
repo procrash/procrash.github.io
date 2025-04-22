@@ -80,6 +80,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
+	// ganz unten in Deinem DOMContentLoaded‑Callback
+	const batchBar = document.getElementById('batchActionBar');
+	batchBar.querySelectorAll('.batch-action').forEach(btn => {
+	  btn.addEventListener('click', async e => {
+		e.stopPropagation();
+		const action = btn.dataset.action;
+		const ids    = Array.from(selectedIds);
+		if (!ids.length) return;
+
+		switch (action) {
+		  case 'photo':
+			// alle Kameras gleichzeitig per sms:-Link ansteuern:
+			const phones = ids
+			  .map(id => cameras.find(c=>c.id===id)?.phone)
+			  .filter(Boolean)
+			  .join(',');
+			window.location.href = `sms:${phones}?body=${encodeURIComponent('PHOTO')}`;
+			break;
+
+		  case 'settings':
+			// Öffne das Settings‑Modal (wie beim Einzel‑Klick)
+			// aber überschreibe den Save‑Handler, um über alle IDs zu iterieren
+			initializeSettingsForm();
+			document.getElementById('sendSettingsButton').onclick = async () => {
+			  const settings = getSettingsFromForm();
+			  for (const id of ids) {
+				await dbManager.saveSettings(id, settings);
+				const cam = cameras.find(c=>c.id===id);
+				await smsManager.sendSms(cam.phone, buildSmsCommand('camera'), id);
+			  }
+			  M.Modal.getInstance(document.getElementById('settingsModal')).close();
+			  selectedIds.clear();
+			  updateBatchBar();
+			  renderCameraList();
+			  M.toast({html: `${ids.length} Kameras aktualisiert`, classes:'toast-success'});
+			};
+			M.Modal.getInstance(document.getElementById('settingsModal')).open();
+			break;
+
+		  case 'rename':
+			const base = prompt('Basis‑Name für alle Kameras');
+			if (base) {
+			  let i = 1;
+			  for (const id of ids) {
+				const c = cameras.find(x=>x.id===id);
+				await dbManager.saveCamera({...c, name: `${base} ${i++}`});
+			  }
+			  cameras = await dbManager.getAllCameras();
+			  renderCameraList();
+			  selectedIds.clear();
+			  updateBatchBar();
+			}
+			break;
+
+		  case 'delete':
+			if (confirm(`Löschen ${ids.length} Kameras?`)) {
+			  for (const id of ids) await dbManager.deleteCamera(id);
+			  cameras = cameras.filter(c=>!selectedIds.has(c.id));
+			  renderCameraList();
+			  selectedIds.clear();
+			  updateBatchBar();
+			}
+			break;
+		}
+	  });
+	});
+
+
 
 
 	// Batch‑Actions (photo / delete / rename / settings) auf alle selectedIds
