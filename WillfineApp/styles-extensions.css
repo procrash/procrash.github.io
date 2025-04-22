@@ -461,3 +461,7 @@ body.batch-mode .camera-checkbox {
   display: block;
   margin: 0 auto;
 }
+
+.camera-list-item .camera-icon {
+  display: none !important;
+}

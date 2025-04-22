@@ -17,6 +17,7 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-extensions.css">
+  <!-- Kamerasymbol-Ausblendung jetzt in styles-extensions.css: .camera-list-item .camera-icon { display: none !important; } -->
   <style>
     /* Banner-Anpassungen ersetzt: Wald-Silhouette als Hintergrund */
     header {
@@ -49,10 +50,16 @@
 <body>
   <!-- Banner-Header -->
   <header>
-	<ul id="nav-mobile" class="right">
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo center"><img src="icons/banner.png" alt="Jagdlogo Banner" class="banner-logo"></a>
+          <ul id="nav-mobile" class="right">
             <li><a href="#" id="installButton" class="hide"><i class="material-icons">get_app</i></a></li>
-  </ul>
-
+          </ul>
+        </div>
+      </nav>
+    </div>
   </header>
 
   <!-- Main Content -->
@@ -131,6 +138,7 @@
     <div class="modal-content">
       <h4>Kamera-Einstellungen</h4>
       <h5 id="settingsCameraName" class="center-align"></h5>
+      <p id="settingsCameraPhone" class="center-align" style="margin-bottom: 16px;"></p>
       <div class="tabs-container">
         <ul class="tabs">
           <li class="tab col s4"><a href="#generalSettings" class="active">Allgemein</a></li>
