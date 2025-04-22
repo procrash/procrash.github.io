@@ -6,6 +6,8 @@
 // Globale Variablen
 let currentCameraId = null;
 let cameras = [];
+let batchMode = false;
+let selectedIds = new Set();
 
 // PWA-Funktionalität
 let deferredPrompt;
@@ -51,6 +53,45 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadCameras();
   await syncManager.checkPendingSMS();
   syncManager.setupNetworkStatus();
+  
+  document.getElementById('batchActionBar').classList.add('hide');
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const dbManager   = window.dbManager;
+  const smsManager  = window.smsManager;
+  const syncManager = window.syncManager;
+
+  initMaterializeComponents();
+  setupEventListeners();
+  await loadCameras();
+  await syncManager.checkPendingSMS();
+  syncManager.setupNetworkStatus();
+
+  // **Hier** ganz unten die Batch‑Actions einhängen:
+  document.getElementById('openBatchSettings')
+    .addEventListener('click', () => {
+      const ids = Array.from(selectedIds);
+      if (!ids.length) return;
+      initializeSettingsForm();
+      document.getElementById('sendSettingsButton').onclick = async () => {
+        const settings = getSettingsFromForm();
+        for (const id of ids) {
+          await dbManager.saveSettings(id, settings);
+          const cam = cameras.find(c=>c.id===id);
+          await smsManager.sendSms(cam.phone, buildSmsCommand('camera'), id);
+        }
+        M.toast({ html: `${ids.length} Kameras aktualisiert`, classes:'toast-success' });
+        M.Modal.getInstance(document.getElementById('settingsModal')).close();
+        selectedIds.clear();
+        document.querySelectorAll('.camera-list-item.selected')
+          .forEach(el=>el.classList.remove('selected'));
+        updateBatchBar();
+      };
+      M.Modal.getInstance(document.getElementById('settingsModal')).open();
+    });
+});
+
 });
 
 // Materialize Komponenten initialisieren
@@ -127,6 +168,20 @@ function renderCameraList() {
   if (!cameras.length) list.innerHTML = `<div class="empty-message">Keine Kameras vorhanden.</div>`;
 }
 
+function updateBatchBar() {
+  const bar = document.getElementById('batchActionBar');
+  const count = selectedIds.size;
+  if (count > 0) {
+    bar.classList.remove('hide');
+    document.getElementById('batchCount').textContent =
+      `${count} Kamera${count>1?'n':''} ausgewählt`;
+  } else {
+    bar.classList.add('hide');
+    batchMode = false;
+  }
+}
+
+
 // Einzeilige UI für eine Kamera ohne Typ-Anzeige
 function addCameraToUI(camera) {
   const list = document.getElementById('cameraList');
@@ -145,6 +200,21 @@ function addCameraToUI(camera) {
     </div>`;
   list.appendChild(item);
   setupCameraActions(item, camera);
+  
+  // Am Ende von addCameraToUI:
+item.addEventListener('click', () => {
+  // Batch-Mode automatisch aktivieren
+  batchMode = true;
+  item.classList.toggle('selected');
+  if (item.classList.contains('selected')) {
+    selectedIds.add(camera.id);
+  } else {
+    selectedIds.delete(camera.id);
+  }
+  updateBatchBar();
+});
+
+
 }
 
 // Aktionen für Kamera-Items

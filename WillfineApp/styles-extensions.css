@@ -465,3 +465,8 @@ body.batch-mode .camera-checkbox {
 .camera-list-item .camera-icon {
   display: none !important;
 }
+
+/* Hebt selektierte Kamerazeile hervor */
+.camera-list-item.selected {
+  background-color: rgba(76, 175, 80, 0.1);
+}

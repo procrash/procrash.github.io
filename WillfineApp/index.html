@@ -77,6 +77,12 @@
     </div>
   </main>
 
+<!-- Batch‑Action‑Bar -->
+<div id="batchActionBar" class="batch-action-bar hide">
+  <span id="batchCount">0 Kameras ausgewählt</span>
+  <button id="openBatchSettings" class="btn">Einstellungen bearbeiten</button>
+</div>
+
 
   <!-- Kamera hinzufügen/bearbeiten Modal -->
   <div id="cameraModal" class="modal modal-fixed-footer">
@@ -482,6 +488,16 @@
             <a href="#!" id="sendSettingsButton" class="waves-effect waves-light btn">SMS senden</a>
         </div>
     </div>
+	
+	<!-- Batch Action Bar -->
+	<div id="batchActionBar" class="batch-action-bar hide">
+	  <div class="batch-actions center-align">
+		<i class="material-icons batch-action" data-action="settings">settings</i>
+		<i class="material-icons batch-action" data-action="rename">edit</i>
+		<i class="material-icons batch-action" data-action="photo">photo</i>
+		<i class="material-icons batch-action" data-action="delete">delete</i>
+	  </div>
+	</div>
 
   <!-- Modals, Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

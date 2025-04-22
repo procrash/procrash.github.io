@@ -2,7 +2,7 @@
   "name": "Wildkamera SMS-Steuerung",
   "short_name": "Wildkameras",
   "description": "Verwaltung und Fernsteuerung von Wildkameras per SMS",
-  "start_url": "/index.html",
+  "start_url": "/WillfineApp/index.html",
   "display": "standalone",
   "background_color": "#4CAF50",
   "theme_color": "#4CAF50",
