@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const syncManager = window.syncManager;
 
   initMaterializeComponents();
-  setupBottomNavigation();
   setupEventListeners();
 
   await loadCameras();
@@ -63,24 +62,6 @@ function initMaterializeComponents() {
   M.Range.init(document.querySelectorAll('input[type=range]'));
 }
 
-// Bottom Navigation Setup
-function setupBottomNavigation() {
-  const navCameras  = document.getElementById('navCameras');
-  const navSettings = document.getElementById('navSettings');
-
-  navCameras.addEventListener('click', e => {
-    e.preventDefault();
-    document.querySelector('.main-container').style.display = 'block';
-    navCameras.classList.add('active');
-    navSettings.classList.remove('active');
-  });
-  navSettings.addEventListener('click', e => {
-    e.preventDefault();
-    document.querySelector('.main-container').style.display = 'none';
-    navSettings.classList.add('active');
-    navCameras.classList.remove('active');
-  });
-}
 
 // Event-Listener für Buttons einrichten
 function setupEventListeners() {
@@ -155,7 +136,6 @@ function addCameraToUI(camera) {
       <i class="material-icons camera-icon">photo_camera</i>
       <div class="camera-info">
         <h5 class="camera-name">${camera.name}</h5>
-        <p class="camera-phone">${camera.phone}</p>
       </div>
     </div>
     <div class="camera-actions">
