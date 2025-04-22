@@ -17,12 +17,45 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-extensions.css">
+  <style>
+    /* Banner-Anpassungen ersetzt: Wald-Silhouette als Hintergrund */
+    header {
+      height: 120px;
+      background: url('icons/forest-silhouette.png') center/cover no-repeat;
+    }
+    /* Optional Farb-Overlay für besseren Kontrast */
+    header::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+    }
+    /* Logo in der Mitte */
+    .brand-logo img.banner-logo {
+      max-height: 60px;
+      margin-top: 30px;
+      position: relative;
+      z-index: 1;
+    }
+    .navbar-fixed .nav-wrapper {
+      background: transparent;
+      box-shadow: none;
+      position: relative;
+    }
+  </style>
 </head>
 <body>
   <!-- Banner-Header -->
   <header>
-    <div class="banner-container">
-      <img src="icons/banner.png" alt="Jagdlogo Banner" class="responsive-img banner-logo">
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo center"><img src="icons/banner.png" alt="Jagdlogo Banner" class="banner-logo"></a>
+          <ul id="nav-mobile" class="right">
+            <li><a href="#" id="installButton" class="hide"><i class="material-icons">get_app</i></a></li>
+          </ul>
+        </div>
+      </nav>
     </div>
   </header>
 
