@@ -41,24 +41,17 @@ window.addEventListener('appinstalled', () => {
 
 // DOMContentLoaded: Module holen & initialisieren
 document.addEventListener('DOMContentLoaded', async () => {
-  const dbManager      = window.dbManager;
-  const smsManager     = window.smsManager;
-  const uiExtensions   = window.uiExtensions;
-  const cameraSettings = window.cameraSettings;
-  const syncManager    = window.syncManager;
+  const dbManager   = window.dbManager;
+  const smsManager  = window.smsManager;
+  const syncManager = window.syncManager;
 
   initMaterializeComponents();
   setupBottomNavigation();
   setupEventListeners();
 
   await loadCameras();
-
   await syncManager.checkPendingSMS();
   syncManager.setupNetworkStatus();
-
-  uiExtensions.setupBatchOperations();
-  uiExtensions.setupDragAndDropSorting();
-  cameraSettings.setupLiveSettingsPreview();
 });
 
 // Materialize Komponenten initialisieren
@@ -91,27 +84,24 @@ function setupBottomNavigation() {
 
 // Event-Listener für Buttons einrichten
 function setupEventListeners() {
-  document.getElementById('addCameraButton').addEventListener('click', () => {
-    document.getElementById('modalTitle').textContent = 'Kamera hinzufügen';
-    document.getElementById('cameraName').value   = '';
-    document.getElementById('cameraPhone').value  = '';
-    document.getElementById('cameraType').value   = 'Standard';
-    M.FormSelect.init(document.getElementById('cameraType'));
-    M.updateTextFields();
-
-    currentCameraId = null;
-    M.Modal.getInstance(document.getElementById('cameraModal')).open();
-  });
+  document.getElementById('addCameraButton').addEventListener('click', () => openCameraModal());
   document.getElementById('saveCameraButton').addEventListener('click', saveCamera);
   document.getElementById('sendSettingsButton').addEventListener('click', sendSettings);
+  document.getElementById('settingsModal').addEventListener('show', () => initializeSettingsForm());
 
   const burstSlider = document.getElementById('burstImages');
-  if (burstSlider) burstSlider.addEventListener('input', () => {
-    document.getElementById('burstImagesValue').textContent = burstSlider.value + 'P';
-    updateSmsPreview();
-  });
+  if (burstSlider) burstSlider.addEventListener('input', () => updateSmsPreview());
   document.querySelectorAll('#settingsModal input, #settingsModal select')
     .forEach(el => el.addEventListener('change', updateSmsPreview));
+}
+
+// Kamera Modal öffnen (add/rename)
+function openCameraModal(camera = null) {
+  document.getElementById('modalTitle').textContent = camera ? 'Kamera umbenennen' : 'Kamera hinzufügen';
+  document.getElementById('cameraName').value  = camera ? camera.name : '';
+  document.getElementById('cameraPhone').value = camera ? camera.phone : '';
+  currentCameraId = camera ? camera.id : null;
+  M.Modal.getInstance(document.getElementById('cameraModal')).open();
 }
 
 // Kamera speichern
@@ -122,20 +112,11 @@ async function saveCamera() {
   if (!isValidPhoneNumber(phone)) return M.toast({ html: 'Bitte gültige Telefonnummer eingeben', classes: 'toast-error' });
 
   try {
-    if (!currentCameraId) {
-      const cam = { id: Date.now().toString(), name, phone };
-      await dbManager.saveCamera(cam);
-      cameras.push(cam);
-      M.toast({ html: 'Kamera hinzugefügt', classes: 'toast-success' });
-    } else {
-      const idx = cameras.findIndex(c => c.id === currentCameraId);
-      if (idx !== -1) {
-        const updated = { ...cameras[idx], name, phone };
-        await dbManager.saveCamera(updated);
-        cameras[idx] = updated;
-        M.toast({ html: 'Kamera aktualisiert', classes: 'toast-success' });
-      }
-    }
+    const cam = { id: currentCameraId || Date.now().toString(), name, phone, type: document.getElementById('cameraType').value };
+    await dbManager.saveCamera(cam);
+    if (!currentCameraId) cameras.push(cam);
+    else cameras = cameras.map(c => c.id === cam.id ? cam : c);
+    M.toast({ html: currentCameraId ? 'Kamera aktualisiert' : 'Kamera hinzugefügt', classes: 'toast-success' });
     M.Modal.getInstance(document.getElementById('cameraModal')).close();
     renderCameraList();
   } catch (err) {
@@ -160,35 +141,28 @@ async function loadCameras() {
 
 // Kameras alphabetisch und einzeilig rendern
 function renderCameraList() {
-  const list = document.getElementById('cameraList');
-  list.innerHTML = '';
-  const sorted = cameras.slice().sort((a, b) => a.name.localeCompare(b.name));
-  if (!sorted.length) {
-    list.innerHTML = `<div class="empty-message">Keine Kameras vorhanden. + anklicken, um eine hinzuzufügen.</div>`;
-    return;
-  }
-  sorted.forEach(addCameraToUI);
+  const list = document.getElementById('cameraList'); list.innerHTML = '';
+  cameras.sort((a, b) => a.name.localeCompare(b.name)).forEach(addCameraToUI);
+  if (!cameras.length) list.innerHTML = `<div class="empty-message">Keine Kameras vorhanden.</div>`;
 }
 
 // Einzeilige UI für eine Kamera ohne Typ-Anzeige
 function addCameraToUI(camera) {
   const list = document.getElementById('cameraList');
-  const item = document.createElement('div');
-  item.className = 'camera-list-item';
-  item.dataset.id = camera.id;
+  const item = document.createElement('div'); item.className = 'camera-list-item'; item.dataset.id = camera.id;
   item.innerHTML = `
     <div class="camera-list-header">
-      <div class="camera-icon"><i class="material-icons">photo_camera</i></div>
+      <i class="material-icons camera-icon">photo_camera</i>
       <div class="camera-info">
         <h5 class="camera-name">${camera.name}</h5>
         <p class="camera-phone">${camera.phone}</p>
       </div>
     </div>
     <div class="camera-actions">
-      <div class="camera-action" data-action="settings"><i class="material-icons action-icon">settings</i></div>
-      <div class="camera-action" data-action="rename"><i class="material-icons action-icon">edit</i></div>
-      <div class="camera-action" data-action="photo"><i class="material-icons action-icon">photo</i></div>
-      <div class="camera-action" data-action="delete"><i class="material-icons action-icon">delete</i></div>
+      <i class="material-icons camera-action" data-action="settings">settings</i>
+      <i class="material-icons camera-action" data-action="rename">edit</i>
+      <i class="material-icons camera-action" data-action="photo">photo</i>
+      <i class="material-icons camera-action" data-action="delete">delete</i>
     </div>`;
   list.appendChild(item);
   setupCameraActions(item, camera);
@@ -196,57 +170,98 @@ function addCameraToUI(camera) {
 
 // Aktionen für Kamera-Items
 function setupCameraActions(item, camera) {
-  item.querySelectorAll('.camera-action').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const action = btn.dataset.action;
-      if (action === 'settings') openSettingsModal(camera);
-      if (action === 'rename')   openRenameModal(camera);
-      if (action === 'photo')    requestPhoto(camera);
-      if (action === 'delete')   confirmDeleteCamera(camera);
-    });
-  });
-}
-
-// Rename-Modal
-function openRenameModal(camera) {
-  currentCameraId = camera.id;
-  document.getElementById('modalTitle').textContent = 'Kamera umbenennen';
-  document.getElementById('cameraName').value  = camera.name;
-  document.getElementById('cameraPhone').value = camera.phone;
-  M.Modal.getInstance(document.getElementById('cameraModal')).open();
+  item.querySelectorAll('.camera-action').forEach(btn => btn.addEventListener('click', e => {
+    e.stopPropagation(); const action = btn.dataset.action;
+    if (action==='settings') openSettingsModal(camera);
+    if (action==='rename')   openCameraModal(camera);
+    if (action==='photo')    requestPhoto(camera);
+    if (action==='delete')   deleteCamera(camera);
+  }));
 }
 
 // Foto anfordern
 async function requestPhoto(camera) {
-  const smsText = cameraSettings.buildSmsCommand('photo');
+  const smsText = buildSmsCommand('photo');
   const sent = await smsManager.sendSms(camera.phone, smsText, camera.id);
-  M.toast({ html: sent ? 'Foto angefordert' : 'Fehler beim Anfordern', classes: sent ? 'toast-success' : 'toast-error' });
-}
-
-// Einstellungen senden
-async function sendSettings() {
-  return cameraSettings.sendSettings();
+  M.toast({ html: sent?'Foto angefordert':'Fehler', classes: sent?'toast-success':'toast-error' });
 }
 
 // Kamera löschen
-function confirmDeleteCamera(camera) {
-  if (confirm(`Kamera "${camera.name}" löschen?`)) deleteCamera(camera.id);
-}
-async function deleteCamera(id) {
-  await dbManager.deleteCamera(id);
-  cameras = cameras.filter(c => c.id !== id);
+async function deleteCamera(camera) {
+  if (!confirm(`Löschen: ${camera.name}?`)) return;
+  await dbManager.deleteCamera(camera.id);
+  cameras = cameras.filter(c=>c.id!==camera.id);
   renderCameraList();
+  M.toast({ html:'Kamera gelöscht', classes:'toast-success' });
+}
+
+// Einstellungen Modal öffnen & befüllen
+async function openSettingsModal(camera) {
+  currentCameraId = camera.id;
+  const settings = await dbManager.getSettings(camera.id) || {};
+  initializeSettingsForm();
+  Object.entries(settings).forEach(([key,val]) => { const el=document.getElementById(key); if(el){ if(el.type==='checkbox')el.checked=val; else el.value=val; } });
+  M.FormSelect.init(document.querySelectorAll('#settingsModal select'));
+  M.updateTextFields();
+  updateSmsPreview();
+  M.Modal.getInstance(document.getElementById('settingsModal')).open();
+}
+
+// Settings-Formular initialisieren
+function initializeSettingsForm() {
+  // Defaultwerte
+  document.getElementById('smsControl').value='Täglich';
+  document.getElementById('captureMode').value='Bild';
+  document.getElementById('burstImages').value=1;
+  document.getElementById('burstImagesValue').textContent='1P';
+  // weitere Defaults...
+}
+
+// SMS-Befehl aus Form generieren
+function buildSmsCommand(type) {
+  const form = getSettingsFromForm();
+  switch(type) {
+    case 'photo': return 'PHOTO';
+    case 'general': return `SET ${form.smsControl}`;
+    case 'camera': return `CAM ${form.captureMode} ${form.burstImages}`;
+    default: return '';
+  }
+}
+
+// Settings-Formulardaten auslesen
+function getSettingsFromForm() {
+  return {
+    smsControl: document.getElementById('smsControl').value,
+    captureMode: document.getElementById('captureMode').value,
+    burstImages: document.getElementById('burstImages').value
+    // weitere Felder...
+  };
+}
+
+// SMS-Vorschau aktualisieren
+function updateSmsPreview() {
+  const smsPreview = document.getElementById('smsPreviewText');
+  const preview = buildSmsCommand('camera');
+  smsPreview.textContent = preview;
+}
+
+// Settings senden
+async function sendSettings() {
+  const camera = cameras.find(c=>c.id===currentCameraId);
+  if(!camera) return;
+  const settings = getSettingsFromForm();
+  await dbManager.saveSettings(camera.id, settings);
+  const text = buildSmsCommand('camera');
+  await smsManager.sendSms(camera.phone, text, camera.id);
+  M.toast({ html:'Einstellungen gesendet', classes:'toast-success' });
+  M.Modal.getInstance(document.getElementById('settingsModal')).close();
 }
 
 // Hilfsfunktion: Telefonnummer validieren
 function isValidPhoneNumber(phoneNumber) {
-  const phoneRegex = /^\+?[0-9]{8,15}$/;
-  return phoneRegex.test(phoneNumber);
+  return /^\+?[0-9]{8,15}$/.test(phoneNumber);
 }
 
-// Modul-Wrapper
-async function openSettingsModal(camera) { return cameraSettings.openSettingsModal(camera); }
-function updateSmsPreview()            { return cameraSettings.updateSmsPreview();                 }
-async function syncPendingSMS()        { return syncManager.syncPendingSMS();                     }
-function setupNetworkStatus()          { return syncManager.setupNetworkStatus();                 }
+// Netzwerk & Sync Wrapper
+async function syncPendingSMS()        { return syncManager.syncPendingSMS(); }
+function setupNetworkStatus()          { return syncManager.setupNetworkStatus(); }
