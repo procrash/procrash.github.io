@@ -239,6 +239,12 @@ async function deleteCamera(id) {
   renderCameraList();
 }
 
+// Hilfsfunktion: Telefonnummer validieren
+function isValidPhoneNumber(phoneNumber) {
+  const phoneRegex = /^\+?[0-9]{8,15}$/;
+  return phoneRegex.test(phoneNumber);
+}
+
 // Modul-Wrapper
 async function openSettingsModal(camera) { return cameraSettings.openSettingsModal(camera); }
 function updateSmsPreview()            { return cameraSettings.updateSmsPreview();                 }
