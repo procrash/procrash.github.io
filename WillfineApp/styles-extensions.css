@@ -483,3 +483,21 @@ body.batch-mode .camera-checkbox {
 .camera-list-item:not(.selected):hover {
   background-color: rgba(0,0,0,0.03);
 }
+
+
+/* Batch‑Action‑Bar: hellgraues Grau statt Weiß */
+.batch-action-bar {
+  background-color: #f5f5f5;    /* oder ein dezentes CSS‑Variable, z.B. var(--surface) */
+}
+
+/* Batch‑Icons: in der Primärfarbe (dunkles Grün) */
+.batch-action {
+  color: var(--primary-color, #388E3C) !important;
+}
+
+/* Optional: bei Hover oder Touch ein leichtes Highlight */
+.batch-action:hover,
+.batch-action:active {
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 50%;
+}
