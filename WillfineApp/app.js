@@ -78,6 +78,63 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
       M.Modal.getInstance(document.getElementById('settingsModal')).open();
     });
+
+
+
+
+	// Batch‑Actions (photo / delete / rename / settings) auf alle selectedIds
+	document.querySelectorAll('.batch-action').forEach(btn => {
+	  btn.addEventListener('click', async (e) => {
+		e.stopPropagation();
+		const action = btn.dataset.action;
+		if (!selectedIds.size) return;
+
+		for (const id of selectedIds) {
+		  const cam = cameras.find(c => c.id === id);
+		  if (!cam) continue;
+
+		  switch (action) {
+			case 'photo':
+			  // foto anfordern
+			  await requestPhoto(cam);
+			  break;
+			case 'settings':
+			  // öffne Einstellungen‑Modal für alle Kameras nacheinander
+			  openSettingsModal(cam);
+			  break;
+			case 'rename':
+			  // Beispiel: neuen Namen holen (z.B. via prompt) und dann durchnummeriert speichern
+			  const base = prompt('Basis‑Name für alle Kameras');
+			  if (base) {
+				let idx = 1;
+				for (const cid of selectedIds) {
+				  const c = cameras.find(x=>x.id===cid);
+				  const newCam = { ...c, name: `${base} ${idx++}` };
+				  await dbManager.saveCamera(newCam);
+				}
+				renderCameraList();
+			  }
+			  break;
+			case 'delete':
+			  // alle löschen
+			  for (const cid of Array.from(selectedIds)) {
+				await dbManager.deleteCamera(cid);
+			  }
+			  cameras = cameras.filter(c=>!selectedIds.has(c.id));
+			  renderCameraList();
+			  selectedIds.clear();
+			  updateBatchBar();
+			  break;
+		  }
+		}
+
+		// nach Foto‑Anfragen kannst Du die Auswahl stehen lassen,
+		// oder sie aufheben:
+		// selectedIds.clear();
+		// updateBatchBar();
+	  });
+	});
+
 });
 
 // Materialize Komponenten initialisieren
