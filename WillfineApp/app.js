@@ -15,8 +15,8 @@ const installButton = document.getElementById('installButton');
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js')
-      .then(registration => console.log('Service Worker registriert:', registration))
-      .catch(error => console.error('Service Worker Registrierung fehlgeschlagen:', error));
+      .then(reg => console.log('Service Worker registriert:', reg))
+      .catch(err => console.error('Service Worker Registrierung fehlgeschlagen:', err));
   });
 }
 
@@ -26,7 +26,6 @@ window.addEventListener('beforeinstallprompt', e => {
   deferredPrompt = e;
   installButton.classList.remove('hide');
 });
-
 installButton.addEventListener('click', async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
@@ -35,7 +34,6 @@ installButton.addEventListener('click', async () => {
   deferredPrompt = null;
   installButton.classList.add('hide');
 });
-
 window.addEventListener('appinstalled', () => {
   console.log('PWA wurde installiert');
   installButton.classList.add('hide');
@@ -58,7 +56,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await syncManager.checkPendingSMS();
   syncManager.setupNetworkStatus();
 
-  uiExtensions.setupCameraListFiltering();
   uiExtensions.setupBatchOperations();
   uiExtensions.setupDragAndDropSorting();
   cameraSettings.setupLiveSettingsPreview();
@@ -84,7 +81,6 @@ function setupBottomNavigation() {
     navCameras.classList.add('active');
     navSettings.classList.remove('active');
   });
-
   navSettings.addEventListener('click', e => {
     e.preventDefault();
     document.querySelector('.main-container').style.display = 'none';
@@ -106,18 +102,14 @@ function setupEventListeners() {
     currentCameraId = null;
     M.Modal.getInstance(document.getElementById('cameraModal')).open();
   });
-
   document.getElementById('saveCameraButton').addEventListener('click', saveCamera);
   document.getElementById('sendSettingsButton').addEventListener('click', sendSettings);
 
   const burstSlider = document.getElementById('burstImages');
-  if (burstSlider) {
-    burstSlider.addEventListener('input', () => {
-      document.getElementById('burstImagesValue').textContent = burstSlider.value + 'P';
-      updateSmsPreview();
-    });
-  }
-
+  if (burstSlider) burstSlider.addEventListener('input', () => {
+    document.getElementById('burstImagesValue').textContent = burstSlider.value + 'P';
+    updateSmsPreview();
+  });
   document.querySelectorAll('#settingsModal input, #settingsModal select')
     .forEach(el => el.addEventListener('change', updateSmsPreview));
 }
@@ -126,33 +118,26 @@ function setupEventListeners() {
 async function saveCamera() {
   const name  = document.getElementById('cameraName').value.trim();
   const phone = document.getElementById('cameraPhone').value.trim();
-  const type  = document.getElementById('cameraType').value;
-
-  if (!name || !phone) {
-    return M.toast({ html: 'Bitte alle Felder ausfüllen', classes: 'toast-error' });
-  }
-  if (!isValidPhoneNumber(phone)) {
-    return M.toast({ html: 'Bitte gültige Telefonnummer eingeben', classes: 'toast-error' });
-  }
+  if (!name || !phone) return M.toast({ html: 'Bitte alle Felder ausfüllen', classes: 'toast-error' });
+  if (!isValidPhoneNumber(phone)) return M.toast({ html: 'Bitte gültige Telefonnummer eingeben', classes: 'toast-error' });
 
   try {
-    if (currentCameraId === null) {
-      const cam = { id: Date.now().toString(), name, phone, type };
+    if (!currentCameraId) {
+      const cam = { id: Date.now().toString(), name, phone, type: document.getElementById('cameraType').value };
       await dbManager.saveCamera(cam);
       cameras.push(cam);
-      addCameraToUI(cam);
       M.toast({ html: 'Kamera hinzugefügt', classes: 'toast-success' });
     } else {
       const idx = cameras.findIndex(c => c.id === currentCameraId);
       if (idx !== -1) {
-        const updated = { ...cameras[idx], name, phone, type };
+        const updated = { ...cameras[idx], name, phone };
         await dbManager.saveCamera(updated);
         cameras[idx] = updated;
-        updateCameraInUI(updated);
         M.toast({ html: 'Kamera aktualisiert', classes: 'toast-success' });
       }
     }
     M.Modal.getInstance(document.getElementById('cameraModal')).close();
+    renderCameraList();
   } catch (err) {
     console.error(err);
     M.toast({ html: 'Fehler beim Speichern', classes: 'toast-error' });
@@ -164,15 +149,6 @@ async function loadCameras() {
   try {
     document.getElementById('loadingIndicator').classList.remove('hide');
     cameras = await dbManager.getAllCameras();
-    if (!cameras.length) {
-      const demo = [
-        { id: '1', name: 'Werner Kamera Schütt', phone: '01757164718', type: 'Pro' },
-        { id: '2', name: 'Hirschmüller Links', phone: '00319703780580', type: 'Pro' },
-        { id: '3', name: 'democam', phone: '01609760483', type: 'Max' }
-      ];
-      for (const d of demo) await dbManager.saveCamera(d);
-      cameras = demo;
-    }
     renderCameraList();
   } catch (err) {
     console.error(err);
@@ -182,17 +158,19 @@ async function loadCameras() {
   }
 }
 
-// Kameras einzeilig rendern
+// Kameras alphabetisch und einzeilig rendern
 function renderCameraList() {
   const list = document.getElementById('cameraList');
   list.innerHTML = '';
-  cameras.forEach(addCameraToUI);
-  if (!cameras.length) {
+  const sorted = cameras.slice().sort((a, b) => a.name.localeCompare(b.name));
+  if (!sorted.length) {
     list.innerHTML = `<div class="empty-message">Keine Kameras vorhanden. + anklicken, um eine hinzuzufügen.</div>`;
+    return;
   }
+  sorted.forEach(addCameraToUI);
 }
 
-// Einzeilige UI für eine Kamera
+// Einzeilige UI für eine Kamera ohne Typ-Anzeige
 function addCameraToUI(camera) {
   const list = document.getElementById('cameraList');
   const item = document.createElement('div');
@@ -216,15 +194,7 @@ function addCameraToUI(camera) {
   setupCameraActions(item, camera);
 }
 
-// UI aktualisieren
-function updateCameraInUI(camera) {
-  const item = document.querySelector(`.camera-list-item[data-id="${camera.id}"]`);
-  if (!item) return;
-  item.querySelector('.camera-name').textContent = camera.name;
-  item.querySelector('.camera-phone').textContent = camera.phone;
-}
-
-// Kamerabereich Interaktionen
+// Aktionen für Kamera-Items
 function setupCameraActions(item, camera) {
   item.querySelectorAll('.camera-action').forEach(btn => {
     btn.addEventListener('click', e => {
@@ -238,13 +208,12 @@ function setupCameraActions(item, camera) {
   });
 }
 
-// Umbenennen-Modal
+// Rename-Modal
 function openRenameModal(camera) {
   currentCameraId = camera.id;
   document.getElementById('modalTitle').textContent = 'Kamera umbenennen';
   document.getElementById('cameraName').value  = camera.name;
   document.getElementById('cameraPhone').value = camera.phone;
-  document.getElementById('cameraType').value  = camera.type;
   M.FormSelect.init(document.getElementById('cameraType'));
   M.updateTextFields();
   M.Modal.getInstance(document.getElementById('cameraModal')).open();
@@ -261,18 +230,14 @@ async function requestPhoto(camera) {
 function confirmDeleteCamera(camera) {
   if (confirm(`Kamera "${camera.name}" löschen?`)) deleteCamera(camera.id);
 }
-
 async function deleteCamera(id) {
   await dbManager.deleteCamera(id);
-  document.querySelector(`.camera-list-item[data-id="${id}"]`).remove();
   cameras = cameras.filter(c => c.id !== id);
-  if (!cameras.length) renderCameraList();
+  renderCameraList();
 }
-
-// Hilfs- und Sync-Funktionen bleiben gleich...
 
 // Modul-Wrapper
 async function openSettingsModal(camera) { return cameraSettings.openSettingsModal(camera); }
-function updateSmsPreview()            { return cameraSettings.updateSmsPreview(); }
-async function syncPendingSMS()        { return syncManager.syncPendingSMS(); }
-function setupNetworkStatus()          { return syncManager.setupNetworkStatus(); }
+function updateSmsPreview()            { return cameraSettings.updateSmsPreview();                 }
+async function syncPendingSMS()        { return syncManager.syncPendingSMS();                     }
+function setupNetworkStatus()          { return syncManager.setupNetworkStatus();                 }
