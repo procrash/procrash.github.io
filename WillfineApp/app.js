@@ -76,29 +76,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupNetworkStatus();
 });
 
-// Online/Offline-Status überwachen
-function setupNetworkStatus() {
-    const updateOnlineStatus = () => {
-        if (navigator.onLine) {
-            console.log('App ist jetzt online');
-            document.body.classList.remove('offline');
-            M.toast({html: 'Sie sind wieder online! Ausstehende SMS werden jetzt gesendet...', classes: 'toast-success'});
-            
-            // Versuche, ausstehende SMS zu synchronisieren
-            syncPendingSMS();
-        } else {
-            console.log('App ist jetzt offline');
-            document.body.classList.add('offline');
-            M.toast({html: 'Sie sind offline. SMS werden gespeichert und später gesendet.', classes: 'toast-error'});
-        }
-    };
-    
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    
-    // Initialen Status setzen
-    updateOnlineStatus();
-}
 
 // Materialize Komponenten initialisieren
 function initMaterializeComponents() {
@@ -410,37 +387,6 @@ function setupCameraActions(cameraItem, camera) {
     });
 }
 
-// Einstellungs-Modal öffnen
-async function openSettingsModal(camera) {
-    currentCameraId = camera.id;
-    
-    // Kamera-Namen im Modal anzeigen
-    document.getElementById('settingsCameraName').textContent = camera.name;
-    
-    // Einstellungen aus der Datenbank laden
-    try {
-        const settings = await dbManager.getSettings(camera.id);
-        
-        if (settings) {
-            // Formular mit gespeicherten Einstellungen füllen
-            fillSettingsForm(settings);
-        } else {
-            // Standardwerte setzen
-            initializeSettingsForm();
-        }
-    } catch (error) {
-        console.error('Fehler beim Laden der Einstellungen:', error);
-        // Standardwerte setzen
-        initializeSettingsForm();
-    }
-    
-    // Modal öffnen
-    const modal = M.Modal.getInstance(document.getElementById('settingsModal'));
-    modal.open();
-    
-    // SMS-Vorschau aktualisieren
-    updateSmsPreview();
-}
 
 // Umbenennen-Modal öffnen
 function openRenameModal(camera) {
@@ -641,38 +587,6 @@ function getSettingsFromForm() {
     return settings;
 }
 
-// SMS-Vorschau aktualisieren
-function updateSmsPreview() {
-    const smsPreview = document.getElementById('smsPreviewText');
-    
-    // Aktive Tab ermitteln
-    let activeTab = '';
-    const tabLinks = document.querySelectorAll('.tabs .tab a');
-    tabLinks.forEach(tab => {
-        if (tab.classList.contains('active')) {
-            activeTab = tab.getAttribute('href').substring(1);
-        }
-    });
-    
-    let previewText = '';
-    
-    // Je nach aktivem Tab unterschiedliche Befehle zusammenbauen
-    switch (activeTab) {
-        case 'generalSettings':
-            previewText = buildSmsCommand('general');
-            break;
-        case 'cameraSettings':
-            previewText = buildSmsCommand('camera');
-            break;
-        case 'timerSettings':
-            previewText = buildSmsCommand('timer');
-            break;
-        default:
-            previewText = buildSmsCommand('general');
-    }
-    
-    smsPreview.textContent = previewText;
-}
 
 // Einstellungen senden
 async function sendSettings() {
@@ -762,28 +676,6 @@ async function checkPendingSMS() {
     }
 }
 
-// Ausstehende SMS synchronisieren
-async function syncPendingSMS() {
-    try {
-        const result = await smsManager.syncPendingSms();
-        
-        if (result.success > 0) {
-            M.toast({
-                html: `${result.success} SMS erfolgreich synchronisiert`,
-                classes: 'toast-success'
-            });
-        }
-        
-        if (result.failed > 0) {
-            M.toast({
-                html: `${result.failed} SMS konnten nicht synchronisiert werden`,
-                classes: 'toast-error'
-            });
-        }
-    } catch (error) {
-        console.error('Fehler bei der SMS-Synchronisation:', error);
-    }
-}
 
 // Hilfsfunktion: Telefonnummer validieren
 function isValidPhoneNumber(phoneNumber) {
@@ -812,34 +704,32 @@ function isValidPhoneNumber(phoneNumber) {
 // Ersetzen Sie die bestehende Funktion durch diese erweiterte Version:
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Manager initialisieren
-    dbManager = window.dbManager;
-    smsManager = window.smsManager;
-    
-    // Materialize-Komponenten initialisieren
-    initMaterializeComponents();
-    
-    // Bottom Navigation einrichten
-    setupBottomNavigation();
-    
-    // Event-Listener für die Buttons einrichten
-    setupEventListeners();
-    
-    // Kameras laden
-    await loadCameras();
-    
-    // Nach pendingSMS schauen
-    await syncManager.checkPendingSMS();
-    
-    // Online/Offline-Status überwachen
-    syncManager.setupNetworkStatus();
-    
-    // Neue Erweiterungen initialisieren
-    uiExtensions.setupCameraListFiltering();
-    uiExtensions.setupBatchOperations();
-    uiExtensions.setupDragAndDropSorting();
-    cameraSettings.setupLiveSettingsPreview();
+  // Module holen
+  const dbManager      = window.dbManager;
+  const smsManager     = window.smsManager;
+  const uiExtensions   = window.uiExtensions;
+  const cameraSettings = window.cameraSettings;
+  const syncManager    = window.syncManager;
+
+  // Materialize-Komponenten, Navigation & Events
+  initMaterializeComponents();
+  setupBottomNavigation();
+  setupEventListeners();
+
+  // Kameras laden
+  await loadCameras();
+
+  // Ausstehende SMS synchronisieren und Status überwachen
+  await syncManager.checkPendingSMS();
+  syncManager.setupNetworkStatus();
+
+  // Erweiterungen initialisieren
+  uiExtensions.setupCameraListFiltering();
+  uiExtensions.setupBatchOperations();
+  uiExtensions.setupDragAndDropSorting();
+  cameraSettings.setupLiveSettingsPreview();
 });
+
 
 // 3. Ersetzen der openSettingsModal-Funktion
 // --------------------------------------------------
