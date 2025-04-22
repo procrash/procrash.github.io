@@ -78,11 +78,15 @@
   </main>
 
 <!-- Batch‑Action‑Bar -->
-<div id="batchActionBar" class="batch-action-bar hide">
-  <span id="batchCount">0 Kameras ausgewählt</span>
-  <button id="openBatchSettings" class="btn">Einstellungen bearbeiten</button>
-</div>
-
+  <div id="batchActionBar" class="batch-action-bar hide">
+    <span id="batchCount">0 Kameras ausgewählt</span>
+    <div class="batch-actions center-align">
+      <i class="material-icons batch-action" data-action="settings">settings</i>
+      <i class="material-icons batch-action" data-action="rename">edit</i>
+      <i class="material-icons batch-action" data-action="photo">photo</i>
+      <i class="material-icons batch-action" data-action="delete">delete</i>
+    </div>
+  </div>
 
   <!-- Kamera hinzufügen/bearbeiten Modal -->
   <div id="cameraModal" class="modal modal-fixed-footer">
