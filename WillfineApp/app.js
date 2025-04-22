@@ -207,14 +207,60 @@ async function openSettingsModal(camera) {
   M.Modal.getInstance(document.getElementById('settingsModal')).open();
 }
 
-// Settings-Formular initialisieren
 function initializeSettingsForm() {
-  // Defaultwerte
-  document.getElementById('smsControl').value='Täglich';
-  document.getElementById('captureMode').value='Bild';
-  document.getElementById('burstImages').value=1;
-  document.getElementById('burstImagesValue').textContent='1P';
-  // weitere Defaults...
+  // Default-Werte in einem Objekt
+  const defaults = {
+    smsControl:        'Täglich',
+    imageSize:         'Original',
+    statusTime:        '00:00',
+    statusReportSwitch: true,
+    maxCount:          'Kein Limit',
+    maxCountSwitch:    false,
+    mmsControlSwitch:  false,
+    smtpSwitch:        true,
+    ftpMode:           'AUS',
+    sendImageSwitch:   true,
+    sendVideoSwitch:   false,
+    captureMode:       'Bild',
+    nightMode:         'Balance',
+    imageResolution:   '24M',
+    videoResolution:   'FHD-1920x1080',
+    pirSensitivity:    'Hoch',
+    flashLed:          'Hoch',
+    videoDuration:     '5s',
+    hourSystem:        '24h',
+    burstImages:       1,
+    motionSensorSwitch:true,
+    sdCycleSwitch:     true,
+    // Timer-Felder ...
+    timer1Start:       '00:00',
+    timer1End:         '00:00',
+    timer1Switch:      false,
+    // ... usw. ...
+    phone1:            '',
+    email1:            ''
+  };
+
+  // Loop über alle Defaults
+  Object.entries(defaults).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (!el) return; // wenn Element nicht existiert, skip
+    if (el.type === 'checkbox') {
+      el.checked = Boolean(value);
+    } else {
+      el.value = value;
+      if (el.tagName === 'SELECT') {
+        M.FormSelect.init(el);
+      }
+    }
+  });
+
+  // Range-Slider und Text-Field-Labels noch einmal updaten
+  const burst = document.getElementById('burstImages');
+  if (burst) {
+    document.getElementById('burstImagesValue').textContent = burst.value + 'P';
+  }
+  M.updateTextFields();
 }
 
 // SMS-Befehl aus Form generieren
