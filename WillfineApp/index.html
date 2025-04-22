@@ -102,6 +102,67 @@
     </a>
   </div>
 
+  <!-- Kamera hinzufügen/bearbeiten Modal -->
+  <div id="cameraModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4 id="modalTitle">Kamera hinzufügen</h4>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="cameraName" type="text" class="validate">
+          <label for="cameraName">Kameraname</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="cameraPhone" type="tel" class="validate">
+          <label for="cameraPhone">Telefonnummer</label>
+        </div>
+        <div class="input-field col s12">
+          <select id="cameraType">
+            <option value="Standard" selected>Standard</option>
+            <option value="Pro">Pro</option>
+            <option value="Max">Max</option>
+          </select>
+          <label>Kameratyp</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-light btn-flat">Abbrechen</a>
+      <a href="#!" id="saveCameraButton" class="waves-effect waves-light btn">Speichern</a>
+    </div>
+  </div>
+
+  <!-- Kamera-Einstellungen Modal -->
+  <div id="settingsModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4>Kamera-Einstellungen</h4>
+      <h5 id="settingsCameraName" class="center-align"></h5>
+      <div class="tabs-container">
+        <ul class="tabs">
+          <li class="tab col s4"><a href="#generalSettings" class="active">Allgemein</a></li>
+          <li class="tab col s4"><a href="#cameraSettings">Kamera</a></li>
+          <li class="tab col s4"><a href="#timerSettings">Zeitplan</a></li>
+        </ul>
+      </div>
+      <div id="generalSettings" class="settings-panel"> <!-- Inhalte ähnlich vorher -->
+        <!-- ... -->
+      </div>
+      <div id="cameraSettings" class="settings-panel"> <!-- Inhalte ähnlich vorher -->
+        <!-- ... -->
+      </div>
+      <div id="timerSettings" class="settings-panel"> <!-- Inhalte ähnlich vorher -->
+        <!-- ... -->
+      </div>
+      <div class="sms-preview">
+        <div class="sms-preview-title">SMS Vorschau:</div>
+        <div id="smsPreviewText"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-light btn-flat">Abbrechen</a>
+      <a href="#!" id="sendSettingsButton" class="waves-effect waves-light btn">SMS senden</a>
+    </div>
+  </div>
+
   <!-- Modals, Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="config.js"></script>
