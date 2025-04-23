@@ -188,7 +188,7 @@ async function openSettingsModal(camera) {
                 twelveHour: false,
                 defaultTime: '08:00',
                 autoClose: true,
-                container: document.querySelector('body')
+                container: document.body
             });
         });
         
