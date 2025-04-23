@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	base = ""
 	baseSet = false
+	settingsShown = false
 	
 	// Batch‑Actions (photo / delete / rename / settings) auf alle selectedIds
 	document.querySelectorAll('.batch-action').forEach(btn => {
@@ -125,7 +126,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 			break;
 		case 'settings':
 			  // öffne Einstellungen‑Modal für alle Kameras nacheinander
-			  openSettingsModal(cam);
+			  if (settingsShown == false) {
+				openSettingsModal(cam);
+				
+				// BEGINN Patch hier
+				// 1. Sammle alle Nummern der selektierten Kameras
+				const phones = Array.from(selectedIds)
+				  .map(id => {
+					const cam = cameras.find(c => c.id === id);
+					return cam && cam.phone;
+				  })
+				  .filter(Boolean);
+
+				if (phones.length) {
+				  // 2. Baue den sms:-Link (iOS/neuere Androids mit Komma getrennt)
+				  const recipients = phones.join(',');
+				  
+				  
+				  const smsLink = `sms:${recipients}?body=${encodeURIComponent(smsPreview.textContent)}`;
+
+				  // 3a. Direkt öffnen:
+				  window.location.href = smsLink;
+
+				  // — oder —
+				  // 3b. In einen <a id="batchSmsLink"> schreiben:
+				  // document.getElementById('batchSmsLink').href = smsLink;
+				}
+				
+			  }
+			  settingsShown=true
+			  
 			  break;
 			case 'rename':
 			  // Beispiel: neuen Namen holen (z.B. via prompt) und dann durchnummeriert speichern
@@ -133,6 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			  if (baseSet == false) {
 				base = prompt('Basis‑Name für alle Kameras');
 			  }
+			  
 			  baseSet = true
 			  
 			  if (base) {
