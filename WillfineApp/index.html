@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#4CAF50">
-  <title>Wildkamera SMS-Steuerung</title>
+  <title>Wildkamera SMS‑Steuerung</title>
 
   <!-- Materialize CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <!-- Google Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <!-- PWA Manifest & Icons -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
@@ -17,261 +18,171 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-extensions.css">
-  <!-- Kamerasymbol-Ausblendung jetzt in styles-extensions.css: .camera-list-item .camera-icon { display: none !important; } -->
   <style>
-    /* Banner-Anpassungen ersetzt: Wald-Silhouette als Hintergrund */
+    /* Banner mit Wald‑Silhouette */
     header {
       height: 120px;
       background: url('icons/forest-silhouette.png') center/cover no-repeat;
     }
-    /* Optional Farb-Overlay für besseren Kontrast */
     header::after {
       content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
+      position: absolute; inset: 0;
+      background: rgba(0, 0, 0, .4);
     }
-    .navbar-fixed .nav-wrapper {
-      background: transparent;
-      box-shadow: none;
-      position: relative;
-    }
+    .navbar-fixed .nav-wrapper {background: transparent; box-shadow: none; position: relative;}
+
+    /* Tabs etwas Abstand zum Titel */
+    .tabs-container{margin-top:16px}
   </style>
 </head>
 <body>
-  <!-- Banner-Header -->
-  <header>
+<header>
   <ul id="nav-mobile" class="right">
-		<li><a href="#" id="installButton" class="hide"><i class="material-icons">get_app</i></a></li>
-	</ul>
+    <li><a href="#" id="installButton" class="hide"><i class="material-icons">get_app</i></a></li>
+  </ul>
+</header>
 
-  </header>
-
-  <!-- Main Content -->
-  <main>
-    <div class="container main-container">
-      <div class="row">
-        <div class="col s12" id="cameraListContainer">
-          <ul class="collection" id="cameraList">
-            <!-- Kameraliste wird dynamisch befüllt -->
-          </ul>
-
-          <div class="preloader-container hide" id="loadingIndicator">
-            <div class="preloader-wrapper small active">
-              <div class="spinner-layer spinner-green-only">
-                <div class="circle-clipper left"><div class="circle"></div></div>
-                <div class="gap-patch"><div class="circle"></div></div>
-                <div class="circle-clipper right"><div class="circle"></div></div>
-              </div>
+<main>
+  <div class="container main-container">
+    <div class="row">
+      <div class="col s12" id="cameraListContainer">
+        <ul class="collection" id="cameraList"></ul>
+        <div id="loadingIndicator" class="preloader-container hide">
+          <div class="preloader-wrapper small active">
+            <div class="spinner-layer spinner-green-only">
+              <div class="circle-clipper left"><div class="circle"></div></div>
+              <div class="gap-patch"><div class="circle"></div></div>
+              <div class="circle-clipper right"><div class="circle"></div></div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Floating Action Button -->
-    <div class="fixed-action-btn add-button">
-      <a class="btn-floating btn-large waves-effect waves-light" id="addCameraButton">
-        <i class="material-icons">add</i>
-      </a>
-    </div>
-  </main>
-
-<!-- Batch‑Action‑Bar -->
-  <div id="batchActionBar" class="batch-action-bar hide">
-    <span id="batchCount">0 Kameras ausgewählt</span>
-    <div class="batch-actions center-align">
-      <i class="material-icons batch-action" data-action="settings">settings</i>
-      <i class="material-icons batch-action" data-action="rename">edit</i>
-      <i class="material-icons batch-action" data-action="photo">photo</i>
-      <i class="material-icons batch-action" data-action="delete">delete</i>
-    </div>
   </div>
 
-  <!-- Kamera hinzufügen/bearbeiten Modal -->
-  <div id="cameraModal" class="modal modal-fixed-footer">
-    <div class="modal-content">
-      <h4 id="modalTitle">Kamera hinzufügen</h4>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="cameraName" type="text" class="validate">
-          <label for="cameraName">Kameraname</label>
+  <!-- Floating Action Button -->
+  <div class="fixed-action-btn add-button">
+    <a id="addCameraButton" class="btn-floating btn-large waves-effect waves-light">
+      <i class="material-icons">add</i>
+    </a>
+  </div>
+</main>
+
+<!-- Batch‑Action‑Bar -->
+<div id="batchActionBar" class="batch-action-bar hide">
+  <span id="batchCount">0 Kameras ausgewählt</span>
+  <div class="batch-actions center-align">
+    <i class="material-icons batch-action" data-action="settings">settings</i>
+    <i class="material-icons batch-action" data-action="rename">edit</i>
+    <i class="material-icons batch-action" data-action="photo">photo</i>
+    <i class="material-icons batch-action" data-action="delete">delete</i>
+  </div>
+</div>
+
+<!-- Kamera hinzufügen / bearbeiten -->
+<div id="cameraModal" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4 id="modalTitle">Kamera hinzufügen</h4>
+    <div class="row">
+      <div class="input-field col s12">
+        <input id="cameraName" type="text" class="validate"><label for="cameraName">Kameraname</label>
+      </div>
+      <div class="input-field col s12">
+        <input id="cameraPhone" type="tel" class="validate"><label for="cameraPhone">Telefonnummer</label>
+      </div>
+      <div class="input-field col s12">
+        <select id="cameraType">
+          <option value="24MP">24MP</option><option value="32MP">32MP</option>
+        </select><label>Kameratyp</label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a>
+    <a id="saveCameraButton" class="waves-effect waves-light btn" href="#!">Speichern</a>
+  </div>
+</div>
+
+<!-- Kamera‑Einstellungen -->
+<div id="settingsModal" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4>Kamera‑Einstellungen</h4>
+    <h5 id="settingsCameraName" class="center-align">Kameraname</h5>
+
+    <div class="tabs-container">
+      <ul class="tabs">
+        <li class="tab col s3"><a class="active" href="#generalSettings">Allgemein</a></li>
+        <li class="tab col s3"><a href="#cameraSettings">Kamera</a></li>
+        <li class="tab col s3"><a href="#timerSettings">Zeitplan</a></li>
+        <li class="tab col s3"><a href="#recipientSettings">Empfänger</a></li>
+      </ul>
+    </div>
+
+    <!-- Allgemein -->
+    <div id="generalSettings" class="settings-panel">
+
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">SMS Fernsteuerung</div>
+        <div class="col s2 center-align setting-switch"></div>
+        <div class="col s5 setting-control">
+          <select id="smsControl"><option>Sofort</option><option>Täglich</option></select>
         </div>
-        <div class="input-field col s12">
-          <input id="cameraPhone" type="tel" class="validate">
-          <label for="cameraPhone">Telefonnummer</label>
+      </div>
+
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">SMTP/FTP Bildgröße</div>
+        <div class="col s2"></div>
+        <div class="col s5 setting-control">
+          <select id="imageSize"><option>HD</option><option>Größer</option><option>Klein</option></select>
         </div>
-        <div class="input-field col s12">
-          <select id="cameraType">
-            <option value="24MP">24MP</option>
-            <option value="32MP">32MP</option>
-          </select>
-          <label>Kameratyp</label>
+      </div>
+
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Täglicher Statusbericht</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="statusReportSwitch" type="checkbox"><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5 setting-control"><input id="statusTime" type="text" class="timepicker" placeholder="HH:MM"></div>
+      </div>
+
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">MMS Fernsteuerung</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="mmsControlSwitch" type="checkbox"><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5"></div>
+      </div>
+
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">SMTP</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="smtpSwitch" type="checkbox" checked><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5"></div>
+      </div>
+
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Max. Anzahl</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="maxCountSwitch" type="checkbox"><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5 setting-control"><input id="maxCount" type="text" value="Kein Limit"></div>
+      </div>
+
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">FTP(S)</div>
+        <div class="col s2"></div>
+        <div class="col s5 setting-control">
+          <div class="row">
+            <div class="col s4"><label><input name="ftpMode" type="radio" value="AUS"><span>AUS</span></label></div>
+            <div class="col s4"><label><input name="ftpMode" type="radio" value="FTP"><span>FTP</span></label></div>
+            <div class="col s4"><label><input name="ftpMode" type="radio" value="FTPS"><span>FTPS</span></label></div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-light btn-flat">Abbrechen</a>
-      <a href="#!" id="saveCameraButton" class="waves-effect waves-light btn">Speichern</a>
-    </div>
-  </div>
 
-    <!-- Kamera-Einstellungen Modal -->
-    <div id="settingsModal" class="modal modal-fixed-footer">
-        <div class="modal-content">
-            <h4>Kamera-Einstellungen</h4>
-            <h5 id="settingsCameraName" class="center-align">Kameraname</h5>
-            
-            <div class="tabs-container">
-                <ul class="tabs">
-                    <li class="tab col s3"><a href="#generalSettings" class="active">Allgemein</a></li>
-                    <li class="tab col s3"><a href="#cameraSettings">Kamera</a></li>
-                    <li class="tab col s3"><a href="#timerSettings">Zeitplan</a></li>
-					<li class="tab col s3"><a href="#recipientSettings">Empfänger</a></li>
-                </ul>
-            </div>
-
-            <!-- Allgemeine Einstellungen -->
-            <div id="generalSettings" class="settings-panel">
-				<div class="row settings-grid">
-					<div class="col s12 setting-row">
-						<div class="col s5 right-align setting-label">
-							<span>SMS Fernsteuerung</span>
-						</div>
-						<div class="col s2 center-align setting-switch">
-						</div>
-						<div class="col s5 setting-control">
-							<select id="smsControl">
-								<option value="Sofort">Sofort</option>
-								<option value="Täglich">Täglich</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="col s12 setting-row">
-						<div class="col s5 right-align setting-label">
-							<span>SMTP/FTP Bildgröße</span>
-						</div>
-						<div class="col s2 center-align setting-switch">
-							<!-- Hier leer, da kein Switch benötigt wird -->
-						</div>
-						<div class="col s5 setting-control">
-							<select id="imageSize">
-								<option value="HD">HD</option>
-								<option value="Größer">Größer</option>
-								<option value="Klein">Klein</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="col s12 setting-row">
-						<div class="col s5 right-align setting-label">
-							<span>Täglicher Statusbericht</span>
-						</div>
-						<div class="col s2 center-align setting-switch">
-							<div class="switch">
-								<label>
-									<input type="checkbox" id="statusReportSwitch">
-									<span class="lever"></span>
-								</label>
-							</div>
-						</div>
-						<div class="col s5 setting-control">
-							<div class="input-field">
-								<input id="statusTime" type="text" class="timepicker" placeholder="HH:MM">
-							</div>
-						</div>
-					</div>
-				</div>
-
-
-					<div class="col s12 setting-row">
-						<div class="col s5 right-align setting-label">
-							<span>MMS Fernsteuerung</span>
-						</div>
-						<div class="col s2 center-align setting-switch">
-							<div class="switch">
-								<label>
-									<input type="checkbox" id="mmsControlSwitch">
-									<span class="lever"></span>
-								</label>
-							</div>
-						</div>
-						<div class="col s5 setting-control">
-							<!-- Leer gelassen, da keine weitere Einstellung -->
-						</div>
-					</div>
-
-					<div class="col s12 setting-row">
-						<div class="col s5 right-align setting-label">
-							<span>SMTP</span>
-						</div>
-						<div class="col s2 center-align setting-switch">
-							<div class="switch">
-								<label>
-									<input type="checkbox" id="smtpSwitch" checked>
-									<span class="lever"></span>
-								</label>
-							</div>
-						</div>
-						<div class="col s5 setting-control">
-							<!-- Leer gelassen, da keine weitere Einstellung -->
-						</div>
-					</div>
-					<div class="col s12 setting-row">
-						<div class="col s5 right-align setting-label">
-							<span>Max. Anzahl</span>
-						</div>
-						<div class="col s2 center-align setting-switch">
-							<div class="switch">
-								<label>
-									<input type="checkbox" id="maxCountSwitch">
-									<span class="lever"></span>
-								</label>
-							</div>
-						</div>
-						<div class="col s5 setting-control">
-							<div class="input-field">
-								<input id="maxCount" type="text" value="Kein Limit">
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="row settings-grid">
-					<div class="col s12 setting-row">
-						<div class="col s5 right-align setting-label">
-							<span>FTP(S)</span>
-						</div>
-						<div class="col s2 center-align setting-switch">
-							<!-- Hier leer, da kein Switch benötigt wird -->
-						</div>
-						<div class="col s5 setting-control">
-							<div class="radio-group row">
-								<div class="col s4">
-									<label>
-										<input name="ftpMode" type="radio" value="AUS" id="ftpModeAus" />
-										<span>AUS</span>
-									</label>
-								</div>
-								<div class="col s4">
-									<label>
-										<input name="ftpMode" type="radio" value="FTP" id="ftpModeFtp" />
-										<span>FTP</span>
-									</label>
-								</div>
-								<div class="col s4">
-									<label>
-										<input name="ftpMode" type="radio" value="FTPS" id="ftpModeFtps" />
-										<span>FTPS</span>
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
+    <!-- Kamera -->
             <!-- Kamera-Einstellungen -->
             <div id="cameraSettings" class="settings-panel">
                 <div class="setting-row">
@@ -424,7 +335,7 @@
                 </div>
             </div>
 
-            <!-- Timer-Einstellungen -->
+    <!-- Zeitplan -->
             <div id="timerSettings" class="settings-panel">
                 <div class="setting-row">
                     <span class="setting-label">Timer 1</span>
@@ -512,7 +423,8 @@
             </div>
 
 
-			<!-- Neue Empfänger-Einstellungen -->
+
+    <!-- Empfänger -->
 			<div id="recipientSettings" class="settings-panel">
 				<div class="row settings-grid">
 					<div class="col s12 setting-row">
@@ -606,30 +518,35 @@
 				</div>
 			</div>
 
-
-            <!-- SMS Vorschau -->
-            <div class="sms-preview">
-                <div class="sms-preview-title">SMS Vorschau:</div>
-                <div id="smsPreviewText">Die SMS-Vorschau wird hier angezeigt</div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-light btn-flat">Abbrechen</a>
-            <a href="#!" id="sendSettingsButton" class="waves-effect waves-light btn">SMS senden</a>
-        </div>
+    <!-- SMS Vorschau -->
+    <div class="sms-preview">
+      <div class="sms-preview-title">SMS Vorschau:</div>
+      <div id="smsPreviewText">Die SMS‑Vorschau wird hier angezeigt</div>
     </div>
-	
+  </div>
+  <div class="modal-footer">
+    <a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a>
+    <a id="sendSettingsButton" class="waves-effect waves-light btn" href="#!">SMS senden</a>
+  </div>
+</div>
 
-  <!-- Modals, Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="config.js"></script>
-  <script src="db-manager.js"></script>
-  <script src="sms-manager.js"></script>
-  <script src="offline-sync-manager.js"></script>
-  <script src="sms-commands.js"></script>
-  <script src="app.js"></script>
-  <script src="ui-extensions.js"></script>
-  <script src="camera-settings.js"></script>
-  <script src="sync-manager.js"></script>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="config.js"></script>
+<script src="db-manager.js"></script>
+<script src="sms-manager.js"></script>
+<script src="offline-sync-manager.js"></script>
+<script src="sms-commands.js"></script>
+<script src="app.js"></script>
+<script src="ui-extensions.js"></script>
+<script src="camera-settings.js"></script>
+<script src="sync-manager.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    M.Tabs.init(document.querySelectorAll('.tabs'));
+    M.FormSelect.init(document.querySelectorAll('select'));
+    M.Timepicker.init(document.querySelectorAll('.timepicker'), {i18n:{cancel:'Abbrechen'}});
+  });
+</script>
 </body>
 </html>
