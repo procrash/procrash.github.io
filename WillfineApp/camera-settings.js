@@ -10,7 +10,60 @@
  * @param {Object} camera - Kameraobjekt mit ID, Name und Typ
  */
  
+
+function setupStatusTimeInput() {
+    const statusTimeInput = document.getElementById('statusTime');
+    
+    // Automatische Formatierung und Validierung
+    statusTimeInput.addEventListener('input', function(e) {
+        // Nur Zahlen und : zulassen
+        let value = e.target.value.replace(/[^0-9:]/g, '');
+        
+        // Automatische Formatierung
+        if (value.length > 2 && !value.includes(':')) {
+            value = value.slice(0,2) + ':' + value.slice(2);
+        }
+        
+        // Auf 5 Zeichen begrenzen (HH:MM)
+        value = value.slice(0, 5);
+        
+        e.target.value = value;
+    });
+    
+    // Finale Validierung beim Verlassen des Feldes
+    statusTimeInput.addEventListener('blur', function(e) {
+        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        
+        if (!timeRegex.test(e.target.value)) {
+            // Ungültige Zeit: Standardwert setzen
+            e.target.value = '08:00';
+            
+            // Optional: Benutzer benachrichtigen
+            M.toast({html: 'Ungültige Zeitangabe. Standardzeit 08:00 wurde gesetzt.', classes: 'rounded'});
+        }
+    });
+} 
  
+function initializeStatusTimepicker() {
+    const statusTimeInput = document.getElementById('statusTime');
+    
+    M.Timepicker.init(statusTimeInput, {
+        twelveHour: false,  // 24-Stunden-Format
+        defaultTime: '08:00',  // Standardzeit
+        autoClose: true,
+        onSelect: function(hour, minute) {
+            // Formatiere die Zeit immer zweistellig
+            const formattedTime = 
+                `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            
+            statusTimeInput.value = formattedTime;
+            
+            // Aktualisiere SMS-Vorschau
+            updateSmsPreview();
+        }
+    });
+}
+
 // Initialisiere das Max-Anzahl-Feld
 function setupMaxCountField() {
     const maxCountField = document.getElementById('maxCount');
