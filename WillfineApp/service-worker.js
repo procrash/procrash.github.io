@@ -2,8 +2,7 @@
  * service-worker.js
  * Service Worker für die Wildkamera SMS-Steuerung PWA mit detailliertem Debug-Logging
  */
-
-const CACHE_NAME = 'wildkamera-cache-v1';
+const CACHE_NAME = 'wildkamera-cache-v1.0.1';  // Versionsnummer erhöhen
 const ASSETS = [
   '/',
   '/index.html',
@@ -32,7 +31,7 @@ const ASSETS = [
   'https://fonts.googleapis.com/icon?family=Material+Icons'
 ];
 
-// Install-Event mit Einzelfile-Logging bei Fehlern
+// Verbesserte Install-Logik mit Update-Mechanismus
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -41,61 +40,77 @@ self.addEventListener('install', event => {
           ASSETS.map(asset =>
             cache.add(asset).catch(err => {
               console.error(`[ServiceWorker] Fehler beim Cachen: ${asset}`, err);
-              // Weiter mit nächsten Assets
               return Promise.resolve();
             })
           )
         );
       })
       .then(() => {
-        console.log('[ServiceWorker] Install abgeschlossen: alle Assets verarbeitet');
-        return self.skipWaiting();
+        console.log('[ServiceWorker] Install abgeschlossen: Assets verarbeitet');
+        return self.skipWaiting();  // Sofortiger Service Worker Wechsel
       })
   );
 });
 
-// Activate-Event: alte Caches entfernen
+// Activate-Event mit verbesserter Cache-Bereinigung
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(names =>
+    caches.keys().then(cacheNames => 
       Promise.all(
-        names.map(name => name !== CACHE_NAME ? caches.delete(name) : null)
+        cacheNames.map(cacheName => {
+          // Alte Caches löschen
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
       )
     ).then(() => {
-      console.log('[ServiceWorker] Activate abgeschlossen');
-      return self.clients.claim();
+      console.log('[ServiceWorker] Alte Caches gelöscht');
+      return self.clients.claim();  // Sofortige Kontrolle aller Clients
     })
   );
 });
 
-// Fetch-Event: Cache-First mit Netzwerk-Update und Offline-Fallback
+// Verbesserte Fetch-Strategie mit Netzwerk-Priorität
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        // Wenn nicht im Cache, aus dem Netz holen
-        return fetch(event.request).then(networkResponse => {
-          // Antwort cachen (wenn gültig)
-          if (networkResponse && networkResponse.ok) {
-            const respClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, respClone));
-          }
+    fetch(event.request)
+      .then(networkResponse => {
+        // Erfolgreiche Netzwerkantwort
+        if (networkResponse && networkResponse.ok) {
+          // Netzwerkantwort in Cache speichern
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
           return networkResponse;
-        });
-      })
-      .catch(err => {
-        console.error('[ServiceWorker] Fetch-Fehler für', event.request.url, err);
-        // Offline-Fallback für Navigationen
-        if (event.request.mode === 'navigate') {
-          return caches.match('/offline-html.html');
         }
-        return new Response('Offline und keine gecachte Version verfügbar.', {
-          status: 503,
-          statusText: 'Service Unavailable'
+        // Bei Netzwerkfehler Cache verwenden
+        return caches.match(event.request);
+      })
+      .catch(() => {
+        // Offline-Fallback
+        return caches.match(event.request).then(cachedResponse => {
+          if (cachedResponse) return cachedResponse;
+          
+          // Spezifischer Offline-Fallback für Navigationen
+          if (event.request.mode === 'navigate') {
+            return caches.match('/offline-html.html');
+          }
+          
+          // Generische Offline-Antwort
+          return new Response('Offline und keine gecachte Version verfügbar.', {
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
         });
       })
   );
+});
+
+// Update-Check Mechanismus
+self.addEventListener('message', event => {
+  if (event.data === 'CHECK_FOR_UPDATE') {
+    self.registration.update();
+  }
 });

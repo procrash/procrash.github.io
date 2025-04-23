@@ -1,4 +1,16 @@
 {
+	
+  "serviceworker": {
+    "src": "/service-worker.js",
+    "scope": "/",
+    "update_via_cache": "none"
+  },
+  "update_on_start": true,  // Neue Eigenschaft
+  "prefer_related_applications": false,
+  "background_fetch": {
+    "enabled": true  // Optional: Hintergrund-Updates
+  },
+  
   "name": "Wildkamera SMS-Steuerung",
   "short_name": "Wildkameras",
   "description": "Verwaltung und Fernsteuerung von Wildkameras per SMS",

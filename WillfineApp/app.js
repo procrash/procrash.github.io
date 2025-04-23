@@ -23,6 +23,16 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Funktion zum Update-Check
+function checkForServiceWorkerUpdate() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.active.postMessage('CHECK_FOR_UPDATE');
+    });
+  }
+}
+
+
 // PWA Installation ermöglichen
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
@@ -149,6 +159,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 		// updateBatchBar();
 	  });
 	});
+	
+	  // Fügen Sie dies am Ende hinzu
+	  checkForServiceWorkerUpdate();
+
 
 });
 
