@@ -54,15 +54,18 @@ function createGeneralConfig() {
     const smsRemoteControl = 1; // Immer aktiviert
     
     // FTP-Einstellungen
-    let ftpSetting = 0;
-    switch (document.getElementById('ftpMode').value) {
-        case 'FTP':
-            ftpSetting = 1;
-            break;
-        case 'FTPS':
-            ftpSetting = 2;
-            break;
-    }
+	let ftpSetting = 0;
+	const selectedFtpMode = document.querySelector('input[name="ftpMode"]:checked');
+	if (selectedFtpMode) {
+		switch (selectedFtpMode.value) {
+			case 'FTP':
+				ftpSetting = 1;
+				break;
+			case 'FTPS':
+				ftpSetting = 2;
+				break;
+		}
+	}
     
     // Nicht dokumentierte Parameter mit Platzhalter
     const placeholder = '0';
