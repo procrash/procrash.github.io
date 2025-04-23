@@ -472,7 +472,7 @@ async function sendSettings() {
 	text = buildSmsCommand('general');
   } else if (activeTab.href == "#cameraSettings") {
 	text = buildSmsCommand('camera');
-  } else if (activeTab.href == ""#timerSettings"") {
+  } else if (activeTab.href == "#timerSettings") {
 	text = buildSmsCommand('camera');
   } else if (activeTab.href == "#recipientSettings") {
 	text = buildSmsCommand('email');
