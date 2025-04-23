@@ -437,14 +437,6 @@ function getSettingsFromForm() {
 
   return form;
 }
-
-// SMS-Vorschau aktualisieren
-function updateSmsPreview() {
-  const smsPreview = document.getElementById('smsPreviewText');
-  const preview = buildSmsCommand('camera');
-  smsPreview.textContent = preview;
-}
-
 function getActiveTab() {
   const tabElement = document.querySelector('.tabs .tab a.active');
   if (!tabElement) return null;
@@ -455,6 +447,30 @@ function getActiveTab() {
     index: Array.from(tabElement.closest('.tabs').querySelectorAll('.tab a')).indexOf(tabElement)
   };
 }
+
+// SMS-Vorschau aktualisieren
+function updateSmsPreview() {
+  const smsPreview = document.getElementById('smsPreviewText');
+
+
+  const activeTab = getActiveTab();
+  // console.log('Active Tab:', activeTab);
+
+  text = ''
+  if (activeTab.href == "#generalSettings") {
+	text = buildSmsCommand('general');
+  } else if (activeTab.href == "#cameraSettings") {
+	text = buildSmsCommand('camera');
+  } else if (activeTab.href == "#timerSettings") {
+	text = buildSmsCommand('camera');
+  } else if (activeTab.href == "#recipientSettings") {
+	text = buildSmsCommand('email');
+  } 
+
+
+  smsPreview.textContent = text;
+}
+
 
 // Settings senden
 async function sendSettings() {
