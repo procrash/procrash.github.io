@@ -465,7 +465,7 @@ async function sendSettings() {
   await dbManager.saveSettings(camera.id, settings);
   
   const activeTab = getActiveTab();
-  console.log('Active Tab:', activeTab);
+  // console.log('Active Tab:', activeTab);
 
   text = ''
   if (activeTab.href == "#generalSettings") {
