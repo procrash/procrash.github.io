@@ -19,34 +19,25 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-extensions.css">
   <style>
-    /* Banner mit Wald‑Silhouette */
-    header {
-      height: 120px;
-      background: url('icons/forest-silhouette.png') center/cover no-repeat;
-    }
-    header::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: rgba(0, 0, 0, .4);
-    }
-    .navbar-fixed .nav-wrapper {background: transparent; box-shadow: none; position: relative;}
-
-    /* Tabs etwas Abstand zum Titel */
+    /* Banner mit Wald-Silhouette */
+    header {height:120px;background:url('icons/forest-silhouette.png') center/cover no-repeat;}
+    header::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.4)}
+    .navbar-fixed .nav-wrapper{background:transparent;box-shadow:none;position:relative}
     .tabs-container{margin-top:16px}
+    /* Add‑Camera Floating Button nun oben rechts */
+    .add-button{position:fixed;top:16px;right:16px;bottom:auto;}
   </style>
 </head>
 <body>
 <header>
-  <ul id="nav-mobile" class="right">
-    <li><a href="#" id="installButton" class="hide"><i class="material-icons">get_app</i></a></li>
-  </ul>
+  <ul id="nav-mobile" class="right"><li><a id="installButton" class="hide" href="#"><i class="material-icons">get_app</i></a></li></ul>
 </header>
 
 <main>
   <div class="container main-container">
     <div class="row">
-      <div class="col s12" id="cameraListContainer">
-        <ul class="collection" id="cameraList"></ul>
+      <div id="cameraListContainer" class="col s12">
+        <ul id="cameraList" class="collection"></ul>
         <div id="loadingIndicator" class="preloader-container hide">
           <div class="preloader-wrapper small active">
             <div class="spinner-layer spinner-green-only">
@@ -60,15 +51,11 @@
     </div>
   </div>
 
-  <!-- Floating Action Button -->
   <div class="fixed-action-btn add-button">
-    <a id="addCameraButton" class="btn-floating btn-large waves-effect waves-light">
-      <i class="material-icons">add</i>
-    </a>
+    <a id="addCameraButton" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></a>
   </div>
 </main>
 
-<!-- Batch‑Action‑Bar -->
 <div id="batchActionBar" class="batch-action-bar hide">
   <span id="batchCount">0 Kameras ausgewählt</span>
   <div class="batch-actions center-align">
@@ -79,45 +66,36 @@
   </div>
 </div>
 
-<!-- Kamera hinzufügen / bearbeiten -->
+<!-- Kamera Modal -->
 <div id="cameraModal" class="modal modal-fixed-footer">
   <div class="modal-content">
     <h4 id="modalTitle">Kamera hinzufügen</h4>
     <div class="row">
-      <div class="input-field col s12">
-        <input id="cameraName" type="text" class="validate"><label for="cameraName">Kameraname</label>
-      </div>
-      <div class="input-field col s12">
-        <input id="cameraPhone" type="tel" class="validate"><label for="cameraPhone">Telefonnummer</label>
-      </div>
-      <div class="input-field col s12">
-        <select id="cameraType">
-          <option value="24MP">24MP</option><option value="32MP">32MP</option>
-        </select><label>Kameratyp</label>
-      </div>
+      <div class="input-field col s12"><input id="cameraName" type="text" class="validate"><label for="cameraName">Kameraname</label></div>
+      <div class="input-field col s12"><input id="cameraPhone" type="tel" class="validate"><label for="cameraPhone">Telefonnummer</label></div>
+      <div class="input-field col s12"><select id="cameraType"><option value="24MP">24MP</option><option value="32MP">32MP</option></select><label>Kameratyp</label></div>
     </div>
   </div>
-  <div class="modal-footer">
-    <a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a>
-    <a id="saveCameraButton" class="waves-effect waves-light btn" href="#!">Speichern</a>
-  </div>
+  <div class="modal-footer"><a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a><a id="saveCameraButton" class="waves-effect waves-light btn" href="#!">Speichern</a></div>
 </div>
 
-	<!-- Kamera‑Einstellungen -->
-	<div id="settingsModal" class="modal modal-fixed-footer">
-	  <div class="modal-content">
-		<h4>Kamera‑Einstellungen</h4>
-		<h5 id="settingsCameraName" class="center-align">Kameraname</h5>
+<!-- Einstellungen Modal -->
+<div id="settingsModal" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4>Kamera‑Einstellungen</h4>
+    <h5 id="settingsCameraName" class="center-align">Kameraname</h5>
+    <div class="tabs-container">
+      <ul class="tabs">
+        <li class="tab col s3"><a class="active" href="#generalSettings">Allgemein</a></li>
+        <li class="tab col s3"><a href="#cameraSettings">Kamera</a></li>
+        <li class="tab col s3"><a href="#timerSettings">Zeitplan</a></li>
+        <li class="tab col s3"><a href="#recipientSettings">Empfänger</a></li>
+      </ul>
+    </div>
 
-		<div class="tabs-container">
-		  <ul class="tabs">
-			<li class="tab col s3"><a class="active" href="#generalSettings">Allgemein</a></li>
-			<li class="tab col s3"><a href="#cameraSettings">Kamera</a></li>
-			<li class="tab col s3"><a href="#timerSettings">Zeitplan</a></li>
-			<li class="tab col s3"><a href="#recipientSettings">Empfänger</a></li>
-		  </ul>
-		</div>
 
+    <!-- Kamera -->
+		<!-- Kamera-Einstellungen -->
 		<!-- Allgemein -->
 		<div id="generalSettings" class="settings-panel">
 
@@ -181,9 +159,6 @@
 			</div>
 		  </div>
 		</div>
-
-		<!-- Kamera-Einstellungen -->
-		<div id="cameraSettings" class="settings-panel">
 
 	  <!-- Bewegungssensor -->
 	  <div class="row setting-row">
@@ -348,59 +323,94 @@
       </div>
     </div>
 
+    <!-- Zeitplan -->
+    <div id="timerSettings" class="settings-panel">
+      <!-- Timer 1 -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Timer 1</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="timer1Switch" type="checkbox"><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5 setting-control">
+          <div class="row" style="margin-bottom:0;">
+            <div class="col s6"><input id="timer1Start" type="text" class="timepicker" placeholder="Start"></div>
+            <div class="col s6"><input id="timer1End"   type="text" class="timepicker" placeholder="Ende"></div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Timer 2 -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Timer 2</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="timer2Switch" type="checkbox"><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5 setting-control">
+          <div class="row" style="margin-bottom:0;">
+            <div class="col s6"><input id="timer2Start" type="text" class="timepicker" placeholder="Start"></div>
+            <div class="col s6"><input id="timer2End"   type="text" class="timepicker" placeholder="Ende"></div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Verzögerung -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Verzögerung</div>
+        <div class="col s2 center-align"><div class="switch"><label><input id="delaySwitch" type="checkbox"><span class="lever"></span></label></div></div>
+        <div class="col s5 setting-control"><input id="delayTime" type="text" placeholder="00:00:00"></div>
+      </div>
+
+      <!-- Zeitraffer -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Zeitraffer</div>
+        <div class="col s2 center-align"><div class="switch"><label><input id="timelapseSwitch" type="checkbox"><span class="lever"></span></label></div></div>
+        <div class="col s5 setting-control"><input id="timelapseTime" type="text" placeholder="00:00:00"></div>
+      </div>
+    </div>
 
     <!-- Empfänger -->
     <div id="recipientSettings" class="settings-panel">
-  <!-- Phone 1 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Phone&nbsp;1</div>
-    <div class="col s9 setting-control"><input id="phone1" type="tel" class="input-field" placeholder="Telefonnummer"></div>
-  </div>
-  <!-- Phone 2 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Phone&nbsp;2</div>
-    <div class="col s9 setting-control"><input id="phone2" type="tel" class="input-field" placeholder="Telefonnummer"></div>
-  </div>
-  <!-- Phone 3 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Phone&nbsp;3</div>
-    <div class="col s9 setting-control"><input id="phone3" type="tel" class="input-field" placeholder="Telefonnummer"></div>
-  </div>
-  <!-- Phone 4 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Phone&nbsp;4</div>
-    <div class="col s9 setting-control"><input id="phone4" type="tel" class="input-field" placeholder="Telefonnummer"></div>
-  </div>
-  <!-- Email 1 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Email&nbsp;1</div>
-    <div class="col s9 setting-control"><input id="email1" type="email" class="input-field" placeholder="E‑Mail‑Adresse"></div>
-  </div>
-  <!-- Email 2 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Email&nbsp;2</div>
-    <div class="col s9 setting-control"><input id="email2" type="email" class="input-field" placeholder="E‑Mail‑Adresse"></div>
-  </div>
-  <!-- Email 3 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Email&nbsp;3</div>
-    <div class="col s9 setting-control"><input id="email3" type="email" class="input-field" placeholder="E‑Mail‑Adresse"></div>
-  </div>
-  <!-- Email 4 -->
-  <div class="row setting-row">
-    <div class="col s3 right-align setting-label">Email&nbsp;4</div>
-    <div class="col s9 setting-control"><input id="email4" type="email" class="input-field" placeholder="E‑Mail‑Adresse"></div>
-  </div>
-</div>
-
-</div>
-
-  </div>
-  <div class="modal-footer"><a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a><a id="sendSettingsButton" class="waves-effect waves-light btn" href="#!">SMS senden</a></div>
-</div>
-
+      <!-- Phone 1 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Phone&nbsp;1</div>
+        <div class="col s10 setting-control"><input id="phone1" type="tel" placeholder="Telefonnummer" class="input-field"></div>
+      </div>
+      <!-- Phone 2 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Phone&nbsp;2</div>
+        <div class="col s10 setting-control"><input id="phone2" type="tel" placeholder="Telefonnummer" class="input-field"></div>
+      </div>
+      <!-- Phone 3 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Phone&nbsp;3</div>
+        <div class="col s10 setting-control"><input id="phone3" type="tel" placeholder="Telefonnummer" class="input-field"></div>
+      </div>
+      <!-- Phone 4 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Phone&nbsp;4</div>
+        <div class="col s10 setting-control"><input id="phone4" type="tel" placeholder="Telefonnummer" class="input-field"></div>
+      </div>
+      <!-- Email 1 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Email&nbsp;1</div>
+        <div class="col s10 setting-control"><input id="email1" type="email" placeholder="E‑Mail‑Adresse" class="input-field"></div>
+      </div>
+      <!-- Email 2 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Email&nbsp;2</div>
+        <div class="col s10 setting-control"><input id="email2" type="email" placeholder="E‑Mail‑Adresse" class="input-field"></div>
+      </div>
+      <!-- Email 3 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Email&nbsp;3</div>
+        <div class="col s10 setting-control"><input id="email3" type="email" placeholder="E‑Mail‑Adresse" class="input-field"></div>
+      </div>
+      <!-- Email 4 -->
+      <div class="row setting-row">
+        <div class="col s2 right-align setting-label">Email&nbsp;4</div>
+        <div class="col s10 setting-control"><input id="email4" type="email" placeholder="E‑Mail‑Adresse" class="input-field"></div>
+      </div>
+    </div>
 
     <!-- SMS Vorschau -->
     <div class="sms-preview">
@@ -408,29 +418,38 @@
       <div id="smsPreviewText">Die SMS‑Vorschau wird hier angezeigt</div>
     </div>
   </div>
-  <div class="modal-footer">
-    <a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a>
-    <a id="sendSettingsButton" class="waves-effect waves-light btn" href="#!">SMS senden</a>
-  </div>
+  <div class="modal-footer"><a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a><a id="sendSettingsButton" class="waves-effect waves-light btn" href="#!">SMS senden</a></div>><a class="modal-close waves-effect waves-light btn-flat" href="#!">Abbrechen</a><a id="sendSettingsButton" class="waves-effect waves-light btn" href="#!">SMS senden</a></div>
 </div>
 
-<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script src="config.js"></script>
-<script src="db-manager.js"></script>
-<script src="sms-manager.js"></script>
-<script src="offline-sync-manager.js"></script>
-<script src="sms-commands.js"></script>
-<script src="app.js"></script>
-<script src="ui-extensions.js"></script>
-<script src="camera-settings.js"></script>
-<script src="sync-manager.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    M.Tabs.init(document.querySelectorAll('.tabs'));
-    M.FormSelect.init(document.querySelectorAll('select'));
-    M.Timepicker.init(document.querySelectorAll('.timepicker'), {i18n:{cancel:'Abbrechen'}});
-  });
-</script>
+<script src="config.js"></script><script src="db-manager.js"></script><script src="sms-manager.js"></script><script src="offline-sync-manager.js"></script><script src="sms-commands.js"></script><script src="app.js"></script><script src="ui-extensions.js"></script><script src="camera-settings.js"></script><script src="sync-manager.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>{M.Tabs.init(document.querySelectorAll('.tabs'));M.FormSelect.init(document.querySelectorAll('select'));M.Timepicker.init(document.querySelectorAll('.timepicker'),{i18n:{cancel:'Abbrechen'}});});</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
