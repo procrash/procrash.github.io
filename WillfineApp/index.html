@@ -103,237 +103,204 @@
   </div>
 </div>
 
-<!-- Kamera‑Einstellungen -->
-<div id="settingsModal" class="modal modal-fixed-footer">
-  <div class="modal-content">
-    <h4>Kamera‑Einstellungen</h4>
-    <h5 id="settingsCameraName" class="center-align">Kameraname</h5>
+	<!-- Kamera‑Einstellungen -->
+	<div id="settingsModal" class="modal modal-fixed-footer">
+	  <div class="modal-content">
+		<h4>Kamera‑Einstellungen</h4>
+		<h5 id="settingsCameraName" class="center-align">Kameraname</h5>
 
-    <div class="tabs-container">
-      <ul class="tabs">
-        <li class="tab col s3"><a class="active" href="#generalSettings">Allgemein</a></li>
-        <li class="tab col s3"><a href="#cameraSettings">Kamera</a></li>
-        <li class="tab col s3"><a href="#timerSettings">Zeitplan</a></li>
-        <li class="tab col s3"><a href="#recipientSettings">Empfänger</a></li>
-      </ul>
-    </div>
+		<div class="tabs-container">
+		  <ul class="tabs">
+			<li class="tab col s3"><a class="active" href="#generalSettings">Allgemein</a></li>
+			<li class="tab col s3"><a href="#cameraSettings">Kamera</a></li>
+			<li class="tab col s3"><a href="#timerSettings">Zeitplan</a></li>
+			<li class="tab col s3"><a href="#recipientSettings">Empfänger</a></li>
+		  </ul>
+		</div>
 
-    <!-- Allgemein -->
-    <div id="generalSettings" class="settings-panel">
+		<!-- Allgemein -->
+		<div id="generalSettings" class="settings-panel">
 
-      <div class="row setting-row">
-        <div class="col s5 right-align setting-label">SMS Fernsteuerung</div>
-        <div class="col s2 center-align setting-switch"></div>
-        <div class="col s5 setting-control">
-          <select id="smsControl"><option>Sofort</option><option>Täglich</option></select>
-        </div>
-      </div>
+		  <div class="row setting-row">
+			<div class="col s5 right-align setting-label">SMS Fernsteuerung</div>
+			<div class="col s2 center-align setting-switch"></div>
+			<div class="col s5 setting-control">
+			  <select id="smsControl"><option>Sofort</option><option>Täglich</option></select>
+			</div>
+		  </div>
 
-      <div class="row setting-row">
-        <div class="col s5 right-align setting-label">SMTP/FTP Bildgröße</div>
-        <div class="col s2"></div>
-        <div class="col s5 setting-control">
-          <select id="imageSize"><option>HD</option><option>Größer</option><option>Klein</option></select>
-        </div>
-      </div>
+		  <div class="row setting-row">
+			<div class="col s5 right-align setting-label">SMTP/FTP Bildgröße</div>
+			<div class="col s2"></div>
+			<div class="col s5 setting-control">
+			  <select id="imageSize"><option>HD</option><option>Größer</option><option>Klein</option></select>
+			</div>
+		  </div>
 
-      <div class="row setting-row">
-        <div class="col s5 right-align setting-label">Täglicher Statusbericht</div>
-        <div class="col s2 center-align">
-          <div class="switch"><label><input id="statusReportSwitch" type="checkbox"><span class="lever"></span></label></div>
-        </div>
-        <div class="col s5 setting-control"><input id="statusTime" type="text" class="timepicker" placeholder="HH:MM"></div>
-      </div>
+		  <div class="row setting-row">
+			<div class="col s5 right-align setting-label">Täglicher Statusbericht</div>
+			<div class="col s2 center-align">
+			  <div class="switch"><label><input id="statusReportSwitch" type="checkbox"><span class="lever"></span></label></div>
+			</div>
+			<div class="col s5 setting-control"><input id="statusTime" type="text" class="timepicker" placeholder="HH:MM"></div>
+		  </div>
 
-      <div class="row setting-row">
-        <div class="col s5 right-align setting-label">MMS Fernsteuerung</div>
-        <div class="col s2 center-align">
-          <div class="switch"><label><input id="mmsControlSwitch" type="checkbox"><span class="lever"></span></label></div>
-        </div>
-        <div class="col s5"></div>
-      </div>
+		  <div class="row setting-row">
+			<div class="col s5 right-align setting-label">MMS Fernsteuerung</div>
+			<div class="col s2 center-align">
+			  <div class="switch"><label><input id="mmsControlSwitch" type="checkbox"><span class="lever"></span></label></div>
+			</div>
+			<div class="col s5"></div>
+		  </div>
 
-      <div class="row setting-row">
-        <div class="col s5 right-align setting-label">SMTP</div>
-        <div class="col s2 center-align">
-          <div class="switch"><label><input id="smtpSwitch" type="checkbox" checked><span class="lever"></span></label></div>
-        </div>
-        <div class="col s5"></div>
-      </div>
+		  <div class="row setting-row">
+			<div class="col s5 right-align setting-label">SMTP</div>
+			<div class="col s2 center-align">
+			  <div class="switch"><label><input id="smtpSwitch" type="checkbox" checked><span class="lever"></span></label></div>
+			</div>
+			<div class="col s5"></div>
+		  </div>
 
-      <div class="row setting-row">
-        <div class="col s5 right-align setting-label">Max. Anzahl</div>
-        <div class="col s2 center-align">
-          <div class="switch"><label><input id="maxCountSwitch" type="checkbox"><span class="lever"></span></label></div>
-        </div>
-        <div class="col s5 setting-control"><input id="maxCount" type="text" value="Kein Limit"></div>
-      </div>
+		  <div class="row setting-row">
+			<div class="col s5 right-align setting-label">Max. Anzahl</div>
+			<div class="col s2 center-align">
+			  <div class="switch"><label><input id="maxCountSwitch" type="checkbox"><span class="lever"></span></label></div>
+			</div>
+			<div class="col s5 setting-control"><input id="maxCount" type="text" value="Kein Limit"></div>
+		  </div>
 
-      <div class="row setting-row">
-        <div class="col s5 right-align setting-label">FTP(S)</div>
-        <div class="col s2"></div>
-        <div class="col s5 setting-control">
-          <div class="row">
-            <div class="col s4"><label><input name="ftpMode" type="radio" value="AUS"><span>AUS</span></label></div>
-            <div class="col s4"><label><input name="ftpMode" type="radio" value="FTP"><span>FTP</span></label></div>
-            <div class="col s4"><label><input name="ftpMode" type="radio" value="FTPS"><span>FTPS</span></label></div>
-          </div>
-        </div>
-      </div>
-    </div>
+		  <div class="row setting-row">
+			<div class="col s5 right-align setting-label">FTP(S)</div>
+			<div class="col s2"></div>
+			<div class="col s5 setting-control">
+			  <div class="row">
+				<div class="col s4"><label><input name="ftpMode" type="radio" value="AUS"><span>AUS</span></label></div>
+				<div class="col s4"><label><input name="ftpMode" type="radio" value="FTP"><span>FTP</span></label></div>
+				<div class="col s4"><label><input name="ftpMode" type="radio" value="FTPS"><span>FTPS</span></label></div>
+			  </div>
+			</div>
+		  </div>
+		</div>
 
-    <!-- Kamera -->
-            <!-- Kamera-Einstellungen -->
-            <div id="cameraSettings" class="settings-panel">
-                <div class="setting-row">
-                    <span class="setting-label">Versand Bild</span>
-                    <div class="switch">
-                        <label>
-                            <input type="checkbox" id="sendImageSwitch" checked>
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
+				<!-- Kamera-Einstellungen -->
+		<!-- Kamera -->
+		<div id="cameraSettings" class="settings-panel">
+	  <!-- Versand Bild -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Versand Bild</div>
+		<div class="col s2 center-align">
+		  <div class="switch"><label><input id="sendImageSwitch" type="checkbox" checked><span class="lever"></span></label></div>
+		</div>
+		<div class="col s5"></div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Versand Video</span>
-                    <div class="switch">
-                        <label>
-                            <input type="checkbox" id="sendVideoSwitch">
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
+	  <!-- Versand Video -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Versand Video</div>
+		<div class="col s2 center-align">
+		  <div class="switch"><label><input id="sendVideoSwitch" type="checkbox"><span class="lever"></span></label></div>
+		</div>
+		<div class="col s5"></div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Aufnahme Modus</span>
-                    <div class="setting-control">
-                        <select id="captureMode">
-                            <option value="Bild">Bild</option>
-                            <option value="Video">Video</option>
-                            <option value="P+V">Bild+Video</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- Aufnahme Modus -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Aufnahme Modus</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control">
+		  <select id="captureMode"><option>Bild</option><option>Video</option><option>P+V</option></select>
+		</div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Nacht Modus</span>
-                    <div class="setting-control">
-                        <select id="nightMode">
-                            <option value="Balance">Balance</option>
-                            <option value="Qualität">Qualität</option>
-                            <option value="Öko">Öko</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- Nacht Modus -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Nacht Modus</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control">
+		  <select id="nightMode"><option>Balance</option><option>Qualität</option><option>Öko</option></select>
+		</div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Bildauflösung</span>
-                    <div class="setting-control">
-                        <select id="imageResolution">
-                            <option value="32M">32M</option>
-                            <option value="24M">24M</option>
-                            <option value="12MP">12MP</option>
-                            <option value="8MP">8MP</option>
-                            <option value="5MP">5MP</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- Bildauflösung -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Bildauflösung</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control">
+		  <select id="imageResolution"><option>32M</option><option>24M</option><option>12MP</option><option>8MP</option><option>5MP</option></select>
+		</div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Videoauflösung</span>
-                    <div class="setting-control">
-                        <select id="videoResolution">
-                            <option value="FHD-1920x1080">FHD-1920x1080</option>
-                            <option value="HD-1280x720">HD-1280x720</option>
-                            <option value="WVGA-848x480">WVGA-848x480</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- Videoauflösung -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Videoauflösung</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control">
+		  <select id="videoResolution"><option>FHD-1920x1080</option><option>HD-1280x720</option><option>WVGA-848x480</option></select>
+		</div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">PIR Sensibilität</span>
-                    <div class="setting-control">
-                        <select id="pirSensitivity">
-                            <option value="L1">L1</option>
-                            <option value="L2">L2</option>
-                            <option value="L3">L3</option>
-                            <option value="L4">L4</option>
-                            <option value="L5">L5</option>
-                            <option value="L6">L6</option>
-                            <option value="L7">L7</option>
-                            <option value="L8">L8</option>
-                            <option value="L9">L9</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- PIR Sensibilität -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">PIR Sensibilität</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control">
+		  <select id="pirSensitivity">
+			<option>L1</option><option>L2</option><option>L3</option><option>L4</option><option>L5</option><option>L6</option><option>L7</option><option>L8</option><option>L9</option>
+		  </select>
+		</div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Blitz LED</span>
-                    <div class="setting-control">
-                        <select id="flashLed">
-                            <option value="Hoch">Hoch</option>
-                            <option value="Gering">Gering</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- Blitz LED -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Blitz LED</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control"><select id="flashLed"><option>Hoch</option><option>Gering</option></select></div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Dauer Video</span>
-                    <div class="setting-control">
-                        <select id="videoDuration">
-                            <option value="5s">5s</option>
-                            <option value="10s">10s</option>
-                            <option value="15s">15s</option>
-                            <option value="20s">20s</option>
-                            <option value="30s">30s</option>
-                            <option value="40s">40s</option>
-                            <option value="50s">50s</option>
-                            <option value="59s">59s</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- Dauer Video -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Dauer Video</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control">
+		  <select id="videoDuration"><option>5s</option><option>10s</option><option>15s</option><option>20s</option><option>30s</option><option>40s</option><option>50s</option><option>59s</option></select>
+		</div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Stundensystem</span>
-                    <div class="setting-control">
-                        <select id="hourSystem">
-                            <option value="24h">24h</option>
-                            <option value="12h">12h</option>
-                        </select>
-                    </div>
-                </div>
+	  <!-- Stundensystem -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Stundensystem</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control"><select id="hourSystem"><option>24h</option><option>12h</option></select></div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Serienbilder</span>
-                    <div class="setting-control">
-                        <div class="range-field">
-                            <input type="range" id="burstImages" min="1" max="5" value="1">
-                        </div>
-                        <span class="right" id="burstImagesValue">1P</span>
-                    </div>
-                </div>
+	  <!-- Serienbilder -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Serienbilder</div>
+		<div class="col s2"></div>
+		<div class="col s5 setting-control">
+		  <div class="range-field"><input id="burstImages" type="range" min="1" max="5" value="1"></div>
+		  <span id="burstImagesValue" class="right">1P</span>
+		</div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Bewegungssensor</span>
-                    <div class="switch">
-                        <label>
-                            <input type="checkbox" id="motionSensorSwitch" checked>
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
+	  <!-- Bewegungssensor -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">Bewegungssensor</div>
+		<div class="col s2 center-align">
+		  <div class="switch"><label><input id="motionSensorSwitch" type="checkbox" checked><span class="lever"></span></label></div>
+		</div>
+		<div class="col s5"></div>
+	  </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">SD Zyklus</span>
-                    <div class="switch">
-                        <label>
-                            <input type="checkbox" id="sdCycleSwitch" checked>
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
+	  <!-- SD Zyklus -->
+	  <div class="row setting-row">
+		<div class="col s5 right-align setting-label">SD Zyklus</div>
+		<div class="col s2 center-align">
+		  <div class="switch"><label><input id="sdCycleSwitch" type="checkbox" checked><span class="lever"></span></label></div>
+		</div>
+		<div class="col s5"></div>
+	  </div>
+	</div>
 
     <!-- Zeitplan -->
             <div id="timerSettings" class="settings-panel">
