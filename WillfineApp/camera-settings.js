@@ -9,6 +9,86 @@
  * Erweiterte Funktion zum Öffnen des Einstellungsmodals mit Kameratyp-spezifischen Optionen
  * @param {Object} camera - Kameraobjekt mit ID, Name und Typ
  */
+ 
+ 
+// Initialisiere das Max-Anzahl-Feld
+function setupMaxCountField() {
+    const maxCountField = document.getElementById('maxCount');
+    const maxCountSwitch = document.getElementById('maxCountSwitch');
+    
+    // Initialen Zustand setzen
+    if (maxCountField.value === "0" || maxCountField.value === "" || maxCountField.value === "Kein Limit") {
+        maxCountField.value = "Kein Limit";
+        maxCountSwitch.checked = false;
+    } else {
+        maxCountSwitch.checked = true;
+    }
+    
+    // Event Listener für das Switch-Element
+    maxCountSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            // Wenn aktiviert, setze einen sinnvollen Standardwert
+            if (maxCountField.value === "Kein Limit" || maxCountField.value === "0") {
+                maxCountField.value = "10";
+            }
+            maxCountField.type = "number";
+            maxCountField.min = "1";
+            maxCountField.max = "99";
+        } else {
+            // Wenn deaktiviert, setze auf "Kein Limit"
+            maxCountField.value = "Kein Limit";
+            maxCountField.type = "text";
+            maxCountField.removeAttribute("min");
+            maxCountField.removeAttribute("max");
+        }
+        // Aktualisiere die SMS-Vorschau
+        updateSmsPreview();
+    });
+    
+    // Event Listener für Eingabevalidierung
+    maxCountField.addEventListener('input', function() {
+        if (maxCountSwitch.checked) {
+            // Nur wenn der Switch aktiviert ist, als Zahl validieren
+            
+            // Entferne alle nicht-numerischen Zeichen
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            // Stelle sicher, dass mindestens 1 ist
+            if (this.value === "" || parseInt(this.value, 10) < 1) {
+                this.value = "1";
+            }
+            
+            // Begrenze auf max 99
+            if (parseInt(this.value, 10) > 99) {
+                this.value = "99";
+            }
+        }
+        
+        // Aktualisiere die SMS-Vorschau
+        updateSmsPreview();
+    });
+    
+    // Initialer Status setzen
+    if (!maxCountSwitch.checked) {
+        maxCountField.value = "Kein Limit";
+        maxCountField.type = "text";
+        maxCountField.removeAttribute("min");
+        maxCountField.removeAttribute("max");
+    }
+}
+
+// Für die SMS-Vorschau bzw. das eigentliche Kommando benötigst du eine Helper-Funktion:
+function getMaxCountValue() {
+    const maxCountField = document.getElementById('maxCount');
+    const maxCountSwitch = document.getElementById('maxCountSwitch');
+    
+    if (!maxCountSwitch.checked || maxCountField.value === "Kein Limit") {
+        return 0; // 0 bedeutet "Kein Limit" im SMS-Kommando
+    }
+    
+    return parseInt(maxCountField.value, 10);
+}
+
 async function openSettingsModal(camera) {
     currentCameraId = camera.id;
     
@@ -226,6 +306,10 @@ function setupLiveSettingsPreview() {
             updateSmsPreview();
         });
     });
+	
+	// Initialisierung für das Max-Anzahl-Feld
+	setupMaxCountField();
+
 }
 
 /**
@@ -356,5 +440,28 @@ function fillSettingsForm(settings) {
 			updateSmsPreview();
 		}
 	});
+	
+	
+    // Spezielle Behandlung für das Max-Anzahl-Feld
+    const maxCountField = document.getElementById('maxCount');
+    const maxCountSwitch = document.getElementById('maxCountSwitch');
+    
+    if (settings.maxCount && parseInt(settings.maxCount) > 0) {
+        maxCountField.value = settings.maxCount;
+        maxCountSwitch.checked = true;
+        maxCountField.type = "number";
+        maxCountField.min = "1";
+        maxCountField.max = "99";
+    } else {
+        maxCountField.value = "Kein Limit";
+        maxCountSwitch.checked = false;
+        maxCountField.type = "text";
+        maxCountField.removeAttribute("min");
+        maxCountField.removeAttribute("max");
+    }
+    
+    // Restlicher bestehender Code...
+}
+	
 
 }
