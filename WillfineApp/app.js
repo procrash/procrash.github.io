@@ -384,16 +384,6 @@ function initializeSettingsForm() {
   M.updateTextFields();
 }
 
-// SMS-Befehl aus Form generieren
-function buildSmsCommand(type) {
-  const form = getSettingsFromForm();
-  switch(type) {
-    case 'photo': return '$03*1#1$';
-    case 'general': return createGeneralConfig(); // `SET ${form.smsControl}`;
-    case 'camera': return `CAM ${form.captureMode} ${form.burstImages}`;
-    default: return '';
-  }
-}
 
 // Settings-Formulardaten auslesen (null‑sicher)
 function getSettingsFromForm() {
@@ -455,6 +445,17 @@ function updateSmsPreview() {
   smsPreview.textContent = preview;
 }
 
+function getActiveTab() {
+  const tabElement = document.querySelector('.tabs .tab a.active');
+  if (!tabElement) return null;
+  
+  return {
+    href: tabElement.getAttribute('href'), // e.g., "#generalSettings"
+    text: tabElement.textContent, // e.g., "Allgemein"
+    index: Array.from(tabElement.closest('.tabs').querySelectorAll('.tab a')).indexOf(tabElement)
+  };
+}
+
 // Settings senden
 async function sendSettings() {
 
@@ -464,6 +465,11 @@ async function sendSettings() {
   if(!camera) return;
   const settings = getSettingsFromForm();
   await dbManager.saveSettings(camera.id, settings);
+  
+  const activeTab = getActiveTab();
+  console.log('Active Tab:', activeTab);
+  
+  
   const text = buildSmsCommand('camera');
 
   if (sendMultiple==true) {
