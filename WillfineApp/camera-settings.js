@@ -344,4 +344,17 @@ function fillSettingsForm(settings) {
     if (burstSlider) {
         document.getElementById('burstImagesValue').textContent = burstSlider.value + 'P';
     }
+	
+	// Initialisieren der Timepicker-Elemente
+	const timepickers = document.querySelectorAll('.timepicker');
+	M.Timepicker.init(timepickers, {
+		twelveHour: false,  // 24-Stunden-Format
+		defaultTime: '08:00',  // Standardzeit
+		autoClose: true,
+		onSelect: function(hour, minute) {
+			// Optional: Callback wenn Zeit ausgewählt wurde
+			updateSmsPreview();
+		}
+	});
+
 }
