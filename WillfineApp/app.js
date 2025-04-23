@@ -399,7 +399,7 @@ function buildSmsCommand(type) {
   const form = getSettingsFromForm();
   switch(type) {
     case 'photo': return '$03*1#1$';
-    case 'general': return `SET ${form.smsControl}`;
+    case 'general': return createGeneralConfig(); // `SET ${form.smsControl}`;
     case 'camera': return `CAM ${form.captureMode} ${form.burstImages}`;
     default: return '';
   }
