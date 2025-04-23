@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			if (phones.length) {
 			  // 2. Baue den sms:-Link (iOS/neuere Androids mit Komma getrennt)
 			  const recipients = phones.join(',');
-			  const smsLink = `sms:${recipients}?body=${encodeURIComponent('PHOTO')}`;
+			  const smsLink = `sms:${recipients}?body=${encodeURIComponent('$03*1#1$')}`;
 
 			  // 3a. Direkt öffnen:
 			  window.location.href = smsLink;
@@ -398,7 +398,7 @@ function initializeSettingsForm() {
 function buildSmsCommand(type) {
   const form = getSettingsFromForm();
   switch(type) {
-    case 'photo': return 'PHOTO';
+    case 'photo': return '$03*1#1$';
     case 'general': return `SET ${form.smsControl}`;
     case 'camera': return `CAM ${form.captureMode} ${form.burstImages}`;
     default: return '';
