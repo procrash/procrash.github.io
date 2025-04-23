@@ -57,30 +57,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   document.getElementById('batchActionBar').classList.add('hide');
 
-  // **Hier** ganz unten die Batch‑Actions einhängen:
-  /*
-  document.getElementById('openBatchSettings')
-    .addEventListener('click', () => {
-      const ids = Array.from(selectedIds);
-      if (!ids.length) return;
-      initializeSettingsForm();
-      document.getElementById('sendSettingsButton').onclick = async () => {
-        const settings = getSettingsFromForm();
-        for (const id of ids) {
-          await dbManager.saveSettings(id, settings);
-          const cam = cameras.find(c=>c.id===id);
-          await smsManager.sendSms(cam.phone, buildSmsCommand('camera'), id);
-        }
-        M.toast({ html: `${ids.length} Kameras aktualisiert`, classes:'toast-success' });
-        M.Modal.getInstance(document.getElementById('settingsModal')).close();
-        selectedIds.clear();
-        document.querySelectorAll('.camera-list-item.selected')
-          .forEach(el=>el.classList.remove('selected'));
-        updateBatchBar();
-      };
-      M.Modal.getInstance(document.getElementById('settingsModal')).open();
-    });
-	*/
 
 	// ganz unten in Deinem DOMContentLoaded‑Callback
 	const batchBar = document.getElementById('batchActionBar');

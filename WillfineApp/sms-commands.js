@@ -39,8 +39,9 @@ function createGeneralConfig() {
     
     // Max Anzahl der Bilder
     const maxCountActive = document.getElementById('maxCountSwitch').checked;
-    const maxCount = maxCountActive ? parseInt(document.getElementById('maxCount').value) || 0 : 0;
-    
+    // const maxCount = maxCountActive ? parseInt(document.getElementById('maxCount').value) || 0 : 0;
+    const maxCount = getMaxCountValue()
+	
     // Statusbericht
     const statusActive = document.getElementById('statusReportSwitch').checked;
     //const statusTime = statusActive ? document.getElementById('statusTime').value.replace(':', '') : 'OFF';
