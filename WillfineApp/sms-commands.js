@@ -1,308 +1,406 @@
 /**
  * sms-commands.js
  * Enthält Funktionen zum Erstellen der SMS-Steuerkommandos für Wildkameras
+ * Basierend auf der WildkameraAPI und unterstützt das klassische $-Befehlsformat
  */
 
-// SMS-Kommandopräfix
-const SMS_PREFIX = '#WK';
+// Mapping der Bildauflösung zu Kommandowerten
+const IMAGE_RESOLUTION_MAP = {
+    '32M': 1,
+    '24M': 2,
+    '12MP': 3,
+    '8MP': 4,
+    '5MP': 5
+};
 
-/**
- * Generiert das SMS-Kommando basierend auf den ausgewählten Einstellungen
- * @param {string} commandType - Art des Kommandos (general, camera, timer, photo, video, status)
- * @returns {string} - Vollständiges SMS-Kommando
- */
-function generateSmsCommand(commandType) {
-    switch (commandType) {
-        case 'general':
-            return generateGeneralCommand();
-        case 'camera':
-            return generateCameraCommand();
-        case 'timer':
-            return generateTimerCommand();
-        case 'photo':
-            return `${SMS_PREFIX}#PHOTO`;
-        case 'video':
-            return `${SMS_PREFIX}#VIDEO`;
-        case 'status':
-            return `${SMS_PREFIX}#STATUS`;
-        case 'reset':
-            return `${SMS_PREFIX}#RESET`;
-        default:
-            return `${SMS_PREFIX}#STATUS`;
-    }
-}
+// Mapping der Videoauflösung zu Kommandowerten
+const VIDEO_RESOLUTION_MAP = {
+    'FHD-1920x1080': 1,
+    'HD-1280x720': 2,
+    'WVGA-848x480': 3
+};
 
 /**
- * Generiert das Kommando für allgemeine Einstellungen
- * @returns {string} - SMS-Kommando für allgemeine Einstellungen
+ * Erstellt ein allgemeines Konfigurationskommando (Kommando 10)
+ * @returns {string} - Formatiertes Kommando
  */
-function generateGeneralCommand() {
-    const smsControl = document.getElementById('smsControl').value;
-    const imageSize = document.getElementById('imageSize').value;
-    const statusActive = document.getElementById('statusReportSwitch').checked;
-    const statusTime = document.getElementById('statusTime').value || '00:00';
-    const smtpActive = document.getElementById('smtpSwitch').checked;
-    const ftpMode = document.getElementById('ftpMode').value;
+function createGeneralConfig() {
+    const smsControl = document.getElementById('smsControl').value === 'Sofort' ? 1 : 0;
     
-    // Baue das Kommando zusammen
-    let command = `${SMS_PREFIX}#SETUP`;
-    
-    // SMS-Fernsteuerung
-    command += `;SMS=${smsControl === 'Sofort' ? 'ON' : 'DAILY'}`;
-    
-    // Bildgröße
-    let imgSizeParam = 'OR'; // Original
-    switch (imageSize) {
+    let imageSize = 2; // Original (Standard)
+    switch (document.getElementById('imageSize').value) {
         case 'Klein':
-            imgSizeParam = 'SM';
+            imageSize = 0;
             break;
         case 'Größer':
-            imgSizeParam = 'LA';
-            break;
-        case 'HD':
-            imgSizeParam = 'HD';
+            imageSize = 1;
             break;
     }
-    command += `;IMG=${imgSizeParam}`;
+    
+    // Max Anzahl der Bilder
+    const maxCountActive = document.getElementById('maxCountSwitch').checked;
+    const maxCount = maxCountActive ? parseInt(document.getElementById('maxCount').value) || 0 : 0;
     
     // Statusbericht
-    if (statusActive) {
-        command += `;SREP=${statusTime.replace(':', '')}`;
-    } else {
-        command += `;SREP=OFF`;
+    const statusActive = document.getElementById('statusReportSwitch').checked;
+    const statusTime = statusActive ? document.getElementById('statusTime').value.replace(':', '') : 'OFF';
+    
+    // MMS Fernsteuerung
+    const mmsControl = document.getElementById('mmsControlSwitch').checked ? 1 : 0;
+    
+    // SMS Fernsteuerung
+    const smsRemoteControl = 1; // Immer aktiviert
+    
+    // FTP-Einstellungen
+    let ftpSetting = 0;
+    switch (document.getElementById('ftpMode').value) {
+        case 'FTP':
+            ftpSetting = 1;
+            break;
+        case 'FTPS':
+            ftpSetting = 2;
+            break;
     }
     
-    // SMTP
-    command += `;SMTP=${smtpActive ? 'ON' : 'OFF'}`;
+    // Nicht dokumentierte Parameter mit Platzhalter
+    const placeholder = '?';
     
-    // FTP
-    if (ftpMode === 'AUS') {
-        command += `;FTP=OFF`;
-    } else if (ftpMode === 'FTPS') {
-        command += `;FTP=FTPS`;
-    } else {
-        command += `;FTP=ON`;
-    }
-    
-    // Empfänger
-    const phone1 = document.getElementById('phone1').value;
-    if (phone1) {
-        command += `;PH1=${phone1}`;
-    }
-    
-    const email1 = document.getElementById('email1').value;
-    if (email1) {
-        command += `;EMAIL1=${email1}`;
-    }
-    
-    return command;
+    return `$10*13#${smsControl}#${imageSize}#${maxCount}#${statusTime}#${placeholder}#${placeholder}#${mmsControl}#${smsRemoteControl}#${ftpSetting}#${placeholder}#${placeholder}#${placeholder}#${placeholder}$`;
 }
 
 /**
- * Generiert das Kommando für Kameraeinstellungen
- * @returns {string} - SMS-Kommando für Kameraeinstellungen
+ * Konfiguriert Telefonnummern für die Bildweiterleitung (Kommando 06)
+ * @returns {string} - Formatiertes Kommando
  */
-function generateCameraCommand() {
-    const sendImage = document.getElementById('sendImageSwitch').checked;
-    const sendVideo = document.getElementById('sendVideoSwitch').checked;
-    const captureMode = document.getElementById('captureMode').value;
-    const nightMode = document.getElementById('nightMode').value;
-    const imageResolution = document.getElementById('imageResolution').value;
-    const videoResolution = document.getElementById('videoResolution').value;
-    const pirSensitivity = document.getElementById('pirSensitivity').value;
-    const flashLed = document.getElementById('flashLed').value;
-    const videoDuration = document.getElementById('videoDuration').value;
-    const burstImages = document.getElementById('burstImages').value;
-    const motionSensor = document.getElementById('motionSensorSwitch').checked;
-    const sdCycle = document.getElementById('sdCycleSwitch').checked;
+function setPhoneNumbers() {
+    const phone1 = document.getElementById('phone1').value || '0';
     
-    // Baue das Kommando zusammen
-    let command = `${SMS_PREFIX}#CAM`;
+    // Weitere Telefonnummern könnten hier hinzugefügt werden, wenn UI-Elemente vorhanden sind
+    const phones = [phone1, '0', '0', '0', '0', '0', '0', '0'];
     
-    // Versand Bild/Video
-    command += `;SEND=${sendImage ? 'IMG' : ''}${sendVideo ? 'VID' : ''}`;
-    if (!sendImage && !sendVideo) {
-        command += 'OFF';
-    }
+    return `$06*8#${phones.join('#')}$`;
+}
+
+/**
+ * Konfiguriert E-Mail-Adressen für die Bildweiterleitung (Kommando 08)
+ * @returns {string} - Formatiertes Kommando
+ */
+function setEmailAddresses() {
+    const email1 = document.getElementById('email1').value || '0';
     
+    // Weitere E-Mail-Adressen könnten hier hinzugefügt werden, wenn UI-Elemente vorhanden sind
+    const emails = [email1, '0', '0', '0', '0', '0', '0', '0'];
+    
+    return `$08*8#${emails.join('#')}$`;
+}
+
+/**
+ * Löst manuell eine Bildaufnahme aus (Kommando 03)
+ * @returns {string} - Formatiertes Kommando
+ */
+function triggerCapture() {
+    return '$03*1#1$';
+}
+
+/**
+ * Erstellt eine detaillierte Kamerakonfiguration (Kommando 01)
+ * @returns {string} - Formatiertes Kommando
+ */
+function createDetailedConfig() {
     // Aufnahmemodus
-    let modeParam = 'IMG';
-    switch (captureMode) {
+    let captureMode = 1; // Standard: Bild
+    switch (document.getElementById('captureMode').value) {
         case 'Video':
-            modeParam = 'VID';
+            captureMode = 2;
             break;
         case 'P+V':
         case 'Bild+Video':
-            modeParam = 'BOTH';
+            captureMode = 3;
             break;
     }
-    command += `;MODE=${modeParam}`;
-    
-    // Nachtmodus
-    let nightParam = 'BAL';
-    switch (nightMode) {
-        case 'Qualität':
-            nightParam = 'QUAL';
-            break;
-        case 'Öko':
-            nightParam = 'ECO';
-            break;
-    }
-    command += `;NIGHT=${nightParam}`;
     
     // Bildauflösung
-    command += `;IMRES=${imageResolution.replace('MP', '')}`;
+    const imageResValue = document.getElementById('imageResolution').value;
+    const imageResolution = IMAGE_RESOLUTION_MAP[imageResValue] || 5;
     
     // Videoauflösung
-    let vidRes = 'FHD';
-    if (videoResolution.includes('1280x720')) {
-        vidRes = 'HD';
-    } else if (videoResolution.includes('848x480')) {
-        vidRes = 'WVGA';
-    }
-    command += `;VIDRES=${vidRes}`;
+    const videoResValue = document.getElementById('videoResolution').value;
+    const videoResolution = VIDEO_RESOLUTION_MAP[videoResValue] || 2;
     
-    // PIR Sensibilität
-    if (pirSensitivity.startsWith('L')) {
-        command += `;PIR=${pirSensitivity}`;
-    } else {
-        let pirParam = 'HIGH';
-        switch (pirSensitivity) {
-            case 'Mittel':
-                pirParam = 'MID';
-                break;
-            case 'Niedrig':
-                pirParam = 'LOW';
-                break;
-        }
-        command += `;PIR=${pirParam}`;
-    }
-    
-    // Blitz LED
-    command += `;FLASH=${flashLed === 'Hoch' ? 'HIGH' : 'LOW'}`;
-    
-    // Videodauer
-    command += `;VLEN=${videoDuration.replace('s', '')}`;
+    // Video-Dauer
+    const videoDuration = parseInt(document.getElementById('videoDuration').value) || 5;
     
     // Serienbilder
-    command += `;BURST=${burstImages}`;
+    const burstImages = parseInt(document.getElementById('burstImages').value) || 1;
+    
+    // Blitz-LED
+    const flashLed = document.getElementById('flashLed').value === 'Hoch' ? 0 : 1;
     
     // Bewegungssensor
-    command += `;PIR=${motionSensor ? 'ON' : 'OFF'}`;
+    const motionSensor = document.getElementById('motionSensorSwitch').checked ? 0 : 1;
     
-    // SD Zyklus
-    command += `;CYCLE=${sdCycle ? 'ON' : 'OFF'}`;
+    // SD-Zyklus
+    const sdCycle = document.getElementById('sdCycleSwitch').checked ? 1 : 0;
     
-    return command;
-}
-
-/**
- * Generiert das Kommando für Timer-Einstellungen
- * @returns {string} - SMS-Kommando für Timer-Einstellungen
- */
-function generateTimerCommand() {
+    // PIR-Sensibilität
+    const pirValue = document.getElementById('pirSensitivity').value;
+    let pirSensitivity = 7; // Standard: L7
+    if (pirValue.startsWith('L')) {
+        pirSensitivity = parseInt(pirValue.substring(1)) || 7;
+    } else {
+        // Umwandlung von 'Hoch', 'Mittel', 'Niedrig' in Werte
+        switch (pirValue) {
+            case 'Hoch':
+                pirSensitivity = 9;
+                break;
+            case 'Mittel':
+                pirSensitivity = 7;
+                break;
+            case 'Niedrig':
+                pirSensitivity = 5;
+                break;
+        }
+    }
+    
+    // Timer-Einstellungen
     const timer1Active = document.getElementById('timer1Switch').checked;
     const timer1Start = document.getElementById('timer1Start').value || '00:00';
     const timer1End = document.getElementById('timer1End').value || '00:00';
+    const timer1Value = timer1Active ? `${timer1Start.replace(':', '')}-${timer1End.replace(':', '')}` : 'OFF';
     
     const timer2Active = document.getElementById('timer2Switch').checked;
     const timer2Start = document.getElementById('timer2Start').value || '00:00';
     const timer2End = document.getElementById('timer2End').value || '00:00';
-    
-    const delayActive = document.getElementById('delaySwitch').checked;
-    const delayTime = document.getElementById('delayTime').value || '00:00:00';
-    
-    const timelapseActive = document.getElementById('timelapseSwitch').checked;
-    const timelapseTime = document.getElementById('timelapseTime').value || '00:00:00';
-    
-    // Baue das Kommando zusammen
-    let command = `${SMS_PREFIX}#TIMER`;
-    
-    // Timer 1
-    if (timer1Active) {
-        const t1Start = timer1Start.replace(':', '');
-        const t1End = timer1End.replace(':', '');
-        command += `;T1=${t1Start}-${t1End}`;
-    } else {
-        command += ';T1=OFF';
-    }
-    
-    // Timer 2
-    if (timer2Active) {
-        const t2Start = timer2Start.replace(':', '');
-        const t2End = timer2End.replace(':', '');
-        command += `;T2=${t2Start}-${t2End}`;
-    } else {
-        command += ';T2=OFF';
-    }
+    const timer2Value = timer2Active ? `${timer2Start.replace(':', '')}-${timer2End.replace(':', '')}` : 'OFF';
     
     // Verzögerung
-    if (delayActive) {
-        // Format 00:00:00 in Sekunden umwandeln
-        const delayParts = delayTime.split(':');
-        let delaySecs = 0;
-        if (delayParts.length === 3) {
-            delaySecs = parseInt(delayParts[0]) * 3600 + parseInt(delayParts[1]) * 60 + parseInt(delayParts[2]);
-        }
-        command += `;DELAY=${delaySecs}`;
-    }
+    const delayActive = document.getElementById('delaySwitch').checked;
+    const delayTime = document.getElementById('delayTime').value || '00:00:00';
+    const delayValue = delayActive ? delayTime : 'OFF';
     
     // Zeitraffer
-    if (timelapseActive) {
-        // Format 00:00:00 in Sekunden umwandeln
-        const timelapseParts = timelapseTime.split(':');
-        let timelapseSecs = 0;
-        if (timelapseParts.length === 3) {
-            timelapseSecs = parseInt(timelapseParts[0]) * 3600 + parseInt(timelapseParts[1]) * 60 + parseInt(timelapseParts[2]);
-        }
-        command += `;TLAPSE=${timelapseSecs}`;
+    const timelapseActive = document.getElementById('timelapseSwitch').checked;
+    const timelapseTime = document.getElementById('timelapseTime').value || '00:00:00';
+    const timelapseValue = timelapseActive ? timelapseTime : 'OFF';
+    
+    // Versand Bild/Video
+    const sendImage = document.getElementById('sendImageSwitch').checked ? 1 : 0;
+    let sendVideo = document.getElementById('sendVideoSwitch').checked ? 1 : 0;
+    
+    // Wichtig: Bei Videodauer > 10s muss sendVideo auf 0 gesetzt sein
+    if (videoDuration > 10) {
+        sendVideo = 0;
     }
     
-    return command;
+    // Stundensystem
+    const hourSystem = document.getElementById('hourSystem').value === '12h' ? 1 : 0;
+    
+    // Serienbilder als Bitmuster für den Versand
+    let burstToSend = 1; // Standardmäßig nur das erste Bild
+    if (burstImages >= 5) {
+        burstToSend = 31; // Alle 5 Bilder
+    } else if (burstImages > 1) {
+        burstToSend = 15; // Bilder 1-4
+    }
+    
+    // Standardwerte für nicht-dokumentierte Parameter
+    const param6 = 2;
+    const param8 = 1;
+    const param11 = 0;
+    const param13 = 0;
+    const param14 = 0;
+    const param22 = "OFF";
+    const param23 = "OFF";
+    const param25 = 0;
+    const param26 = 0;
+    const param27 = 0;
+    
+    return `$01*27#${captureMode}#${imageResolution}#${videoResolution}#${videoDuration}#${burstImages}#${param6}#${flashLed}#${param8}#${motionSensor}#${sdCycle}#${param11}#${pirSensitivity}#${param13}#${param14}#${delayValue}#${timelapseValue}#${timer1Value}#${timer2Value}#${sendImage}#${sendVideo}#${burstToSend}#${param22}#${param23}#${hourSystem}#${param25}#${param26}#${param27}$`;
 }
 
 /**
- * Generiert spezielle Schnellbefehle für Wildkameras
- * @param {string} commandType - Art des Schnellbefehls
- * @returns {string} - SMS-Kommando
+ * Erstellt eine Konfiguration für reinen Bildmodus
+ * @returns {string} - Formatiertes Kommando
  */
-function generateQuickCommand(commandType) {
+function createImageOnlyConfig() {
+    // Setze Formulardaten für Bild-Modus
+    document.getElementById('captureMode').value = 'Bild';
+    document.getElementById('sendImageSwitch').checked = true;
+    document.getElementById('sendVideoSwitch').checked = false;
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Erstellt eine Konfiguration für reinen Videomodus
+ * @returns {string} - Formatiertes Kommando
+ */
+function createVideoOnlyConfig() {
+    // Setze Formulardaten für Video-Modus
+    document.getElementById('captureMode').value = 'Video';
+    document.getElementById('sendImageSwitch').checked = false;
+    
+    // Videodauer prüfen und ggf. sendVideo anpassen
+    const videoDuration = parseInt(document.getElementById('videoDuration').value) || 5;
+    document.getElementById('sendVideoSwitch').checked = (videoDuration <= 10);
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Erstellt eine Konfiguration für kombinierten Bild- und Videomodus
+ * @returns {string} - Formatiertes Kommando
+ */
+function createImageAndVideoConfig() {
+    // Setze Formulardaten für Bild+Video-Modus
+    document.getElementById('captureMode').value = 'P+V';
+    document.getElementById('sendImageSwitch').checked = true;
+    
+    // Videodauer prüfen und ggf. sendVideo anpassen
+    const videoDuration = parseInt(document.getElementById('videoDuration').value) || 5;
+    document.getElementById('sendVideoSwitch').checked = (videoDuration <= 10);
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Erstellt eine Konfiguration mit Timer 1
+ * @param {string} timeRange - Zeitraum im Format "HH:MM-HH:MM"
+ * @returns {string} - Formatiertes Kommando
+ */
+function createTimer1Config(timeRange) {
+    // Zeitraum in Start und Ende aufteilen
+    const [start, end] = timeRange.split('-');
+    
+    // Timer-Formularfelder setzen
+    document.getElementById('timer1Switch').checked = true;
+    document.getElementById('timer1Start').value = start;
+    document.getElementById('timer1End').value = end;
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Erstellt eine Konfiguration mit Timer 2
+ * @param {string} timeRange - Zeitraum im Format "HH:MM-HH:MM"
+ * @returns {string} - Formatiertes Kommando
+ */
+function createTimer2Config(timeRange) {
+    // Zeitraum in Start und Ende aufteilen
+    const [start, end] = timeRange.split('-');
+    
+    // Timer-Formularfelder setzen
+    document.getElementById('timer2Switch').checked = true;
+    document.getElementById('timer2Start').value = start;
+    document.getElementById('timer2End').value = end;
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Erstellt eine Konfiguration mit Verzögerung
+ * @param {string} delayTime - Verzögerung im Format "HH:MM:SS"
+ * @returns {string} - Formatiertes Kommando
+ */
+function createDelayConfig(delayTime) {
+    // Verzögerungs-Formularfelder setzen
+    document.getElementById('delaySwitch').checked = true;
+    document.getElementById('delayTime').value = delayTime;
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Erstellt eine Konfiguration mit Zeitraffer
+ * @param {string} timelapseInterval - Zeitraffer-Intervall im Format "HH:MM:SS"
+ * @returns {string} - Formatiertes Kommando
+ */
+function createTimelapseConfig(timelapseInterval) {
+    // Zeitraffer-Formularfelder setzen
+    document.getElementById('timelapseSwitch').checked = true;
+    document.getElementById('timelapseTime').value = timelapseInterval;
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Erstellt eine Konfiguration für HD-Video längerer Dauer (ohne Versand)
+ * @param {number} duration - Videodauer in Sekunden (15, 20, 30, 40, 50, 59)
+ * @returns {string} - Formatiertes Kommando
+ */
+function createLongVideoConfig(duration) {
+    // Überprüfe, ob die Dauer ein gültiger Wert für längere Videos ist
+    const validDurations = [15, 20, 30, 40, 50, 59];
+    const validDuration = validDurations.includes(duration) ? duration : 30;
+    
+    // Formularfelder setzen
+    document.getElementById('captureMode').value = 'Video';
+    document.getElementById('sendImageSwitch').checked = false;
+    document.getElementById('sendVideoSwitch').checked = false; // Muss 0 sein bei längerer Dauer
+    document.getElementById('videoDuration').value = validDuration + 's';
+    
+    // Bei längeren Videos, HD oder WVGA verwenden (nicht FHD)
+    if (document.getElementById('videoResolution').value === 'FHD-1920x1080') {
+        document.getElementById('videoResolution').value = 'HD-1280x720';
+    }
+    
+    return createDetailedConfig();
+}
+
+/**
+ * Hauptfunktion zum Erstellen von SMS-Kommandos basierend auf dem Formular
+ * @param {string} commandType - Art des Kommandos (general, photo, etc.)
+ * @returns {string} - Formatiertes Kommando
+ */
+function buildSmsCommand(commandType) {
     switch (commandType) {
+        case 'general':
+            return createGeneralConfig();
         case 'photo':
-            return `${SMS_PREFIX}#PHOTO`;
-        case 'video':
-            return `${SMS_PREFIX}#VIDEO10`; // 10 Sekunden Video
-        case 'status':
-            return `${SMS_PREFIX}#STATUS`;
-        case 'battery':
-            return `${SMS_PREFIX}#BATTERY`;
-        case 'memory':
-            return `${SMS_PREFIX}#MEMORY`;
-        case 'location':
-            return `${SMS_PREFIX}#LOCATE`;
-        case 'power_on':
-            return `${SMS_PREFIX}#POWER=ON`;
-        case 'power_off':
-            return `${SMS_PREFIX}#POWER=OFF`;
-        case 'reset':
-            return `${SMS_PREFIX}#RESET`;
+            return triggerCapture();
+        case 'email':
+            return setEmailAddresses();
+        case 'phone':
+            return setPhoneNumbers();
+        case 'camera':
+            return createDetailedConfig();
+        case 'image_only':
+            return createImageOnlyConfig();
+        case 'video_only':
+            return createVideoOnlyConfig();
+        case 'image_video':
+            return createImageAndVideoConfig();
+        case 'long_video':
+            const duration = parseInt(document.getElementById('videoDuration').value) || 30;
+            return createLongVideoConfig(duration);
         default:
-            return `${SMS_PREFIX}#STATUS`;
+            // Standardmäßig Status-Kommando zurückgeben
+            return '$03*1#1$';
     }
 }
 
 /**
- * Baut das SMS-Kommando basierend auf den Formularfeldern zusammen
- * @param {string} type - Art des Kommandos
- * @returns {string} - Vollständiges SMS-Kommando
+ * Aktualisiert die Vorschau des SMS-Kommandos
  */
-function buildSmsCommand(type) {
-    if (['photo', 'video', 'status', 'battery', 'memory', 'location', 'power_on', 'power_off', 'reset'].includes(type)) {
-        return generateQuickCommand(type);
-    } else {
-        return generateSmsCommand(type);
+function updateSmsPreview() {
+    const command = createDetailedConfig();
+    const previewElement = document.getElementById('smsPreviewText');
+    if (previewElement) {
+        previewElement.textContent = command;
     }
 }
 
-// Exportiere die Funktion, um sie in app.js zu nutzen
+// Exportiere die Funktionen für die Verwendung in anderen Modulen
 window.buildSmsCommand = buildSmsCommand;
+window.updateSmsPreview = updateSmsPreview;
+
+// Event-Listener für alle Formularelemente hinzufügen, um die Vorschau zu aktualisieren
+document.addEventListener('DOMContentLoaded', function() {
+    const formElements = document.querySelectorAll('#settingsModal input, #settingsModal select');
+    formElements.forEach(element => {
+        element.addEventListener('change', updateSmsPreview);
+    });
+    
+    // Initial die Vorschau aktualisieren
+    updateSmsPreview();
+});
