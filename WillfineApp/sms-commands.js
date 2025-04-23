@@ -43,7 +43,7 @@ function createGeneralConfig() {
     
     // Statusbericht
     const statusActive = document.getElementById('statusReportSwitch').checked;
-    #const statusTime = statusActive ? document.getElementById('statusTime').value.replace(':', '') : 'OFF';
+    //const statusTime = statusActive ? document.getElementById('statusTime').value.replace(':', '') : 'OFF';
     const statusTime = statusActive ? document.getElementById('statusTime').value : 'OFF';
     
     // MMS Fernsteuerung
