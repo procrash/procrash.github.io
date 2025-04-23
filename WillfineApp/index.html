@@ -132,109 +132,198 @@
 
             <!-- Allgemeine Einstellungen -->
             <div id="generalSettings" class="settings-panel">
-<div class="row settings-grid">
-    <div class="col s12 setting-row">
-        <div class="col s5 right-align setting-label">
-            <span>SMS Fernsteuerung</span>
-        </div>
-        <div class="col s2 center-align setting-switch">
-            <div class="switch">
-                <label>
-                    <input type="checkbox" id="smsControlSwitch">
-                    <span class="lever"></span>
-                </label>
-            </div>
-        </div>
-        <div class="col s5 setting-control">
-            <select id="smsControl">
-                <option value="Sofort">Sofort</option>
-                <option value="Täglich">Täglich</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="col s12 setting-row">
-        <div class="col s5 right-align setting-label">
-            <span>SMTP/FTP Bildgröße</span>
-        </div>
-        <div class="col s2 center-align setting-switch">
-            <!-- Hier leer, da kein Switch benötigt wird -->
-        </div>
-        <div class="col s5 setting-control">
-            <select id="imageSize">
-                <option value="HD">HD</option>
-                <option value="Größer">Größer</option>
-                <option value="Klein">Klein</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="col s12 setting-row">
-        <div class="col s5 right-align setting-label">
-            <span>Täglicher Statusbericht</span>
-        </div>
-        <div class="col s2 center-align setting-switch">
-            <div class="switch">
-                <label>
-                    <input type="checkbox" id="statusReportSwitch">
-                    <span class="lever"></span>
-                </label>
-            </div>
-        </div>
-        <div class="col s5 setting-control">
-            <div class="input-field">
-                <input id="statusTime" type="text" class="timepicker" placeholder="HH:MM">
-            </div>
-        </div>
-    </div>
-</div>
-
-				<div class="setting-row">
-					<div class="setting-label-container">
-						<span class="setting-label">Max. Anzahl</span>
-						<div class="switch" style="margin-left: 10px;">
-							<label>
-								<input type="checkbox" id="maxCountSwitch">
-								<span class="lever"></span>
-							</label>
+				<div class="row settings-grid">
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>SMS Fernsteuerung</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+						</div>
+						<div class="col s5 setting-control">
+							<select id="smsControl">
+								<option value="Sofort">Sofort</option>
+								<option value="Täglich">Täglich</option>
+							</select>
 						</div>
 					</div>
-					<div class="setting-control">
-						<div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-							<input id="maxCount" type="text" value="Kein Limit">
+
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>SMTP/FTP Bildgröße</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<!-- Hier leer, da kein Switch benötigt wird -->
+						</div>
+						<div class="col s5 setting-control">
+							<select id="imageSize">
+								<option value="HD">HD</option>
+								<option value="Größer">Größer</option>
+								<option value="Klein">Klein</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>Täglicher Statusbericht</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<div class="switch">
+								<label>
+									<input type="checkbox" id="statusReportSwitch">
+									<span class="lever"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col s5 setting-control">
+							<div class="input-field">
+								<input id="statusTime" type="text" class="timepicker" placeholder="HH:MM">
+							</div>
 						</div>
 					</div>
 				</div>
-                <div class="setting-row">
-                    <span class="setting-label">MMS Fernsteuerung</span>
-                    <div class="switch">
-                        <label>
-                            <input type="checkbox" id="mmsControlSwitch">
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">SMTP</span>
-                    <div class="switch">
-                        <label>
-                            <input type="checkbox" id="smtpSwitch" checked>
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
+				<div class="row settings-grid">
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>Max. Anzahl</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<div class="switch">
+								<label>
+									<input type="checkbox" id="maxCountSwitch">
+									<span class="lever"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col s5 setting-control">
+							<div class="input-field">
+								<input id="maxCount" type="text" value="Kein Limit">
+							</div>
+						</div>
+					</div>
 
-                <div class="setting-row">
-                    <span class="setting-label">FTP(S)</span>
-                    <div class="setting-control">
-                        <select id="ftpMode">
-                            <option value="AUS">AUS</option>
-                            <option value="FTP">FTP</option>
-                            <option value="FTPS">FTPS</option>
-                        </select>
-                    </div>
-                </div>
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>MMS Fernsteuerung</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<div class="switch">
+								<label>
+									<input type="checkbox" id="mmsControlSwitch">
+									<span class="lever"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col s5 setting-control">
+							<!-- Leer gelassen, da keine weitere Einstellung -->
+						</div>
+					</div>
+
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>SMTP</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<div class="switch">
+								<label>
+									<input type="checkbox" id="smtpSwitch" checked>
+									<span class="lever"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col s5 setting-control">
+							<!-- Leer gelassen, da keine weitere Einstellung -->
+						</div>
+					</div>
+				</div><div class="row settings-grid">
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>Max. Anzahl</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<div class="switch">
+								<label>
+									<input type="checkbox" id="maxCountSwitch">
+									<span class="lever"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col s5 setting-control">
+							<div class="input-field">
+								<input id="maxCount" type="text" value="Kein Limit">
+							</div>
+						</div>
+					</div>
+
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>MMS Fernsteuerung</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<div class="switch">
+								<label>
+									<input type="checkbox" id="mmsControlSwitch">
+									<span class="lever"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col s5 setting-control">
+							<!-- Leer gelassen, da keine weitere Einstellung -->
+						</div>
+					</div>
+
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>SMTP</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<div class="switch">
+								<label>
+									<input type="checkbox" id="smtpSwitch" checked>
+									<span class="lever"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col s5 setting-control">
+							<!-- Leer gelassen, da keine weitere Einstellung -->
+						</div>
+					</div>
+				</div>
+
+				<div class="row settings-grid">
+					<div class="col s12 setting-row">
+						<div class="col s5 right-align setting-label">
+							<span>FTP(S)</span>
+						</div>
+						<div class="col s2 center-align setting-switch">
+							<!-- Hier leer, da kein Switch benötigt wird -->
+						</div>
+						<div class="col s5 setting-control">
+							<div class="radio-group row">
+								<div class="col s4">
+									<label>
+										<input name="ftpMode" type="radio" value="AUS" id="ftpModeAus" />
+										<span>AUS</span>
+									</label>
+								</div>
+								<div class="col s4">
+									<label>
+										<input name="ftpMode" type="radio" value="FTP" id="ftpModeFtp" />
+										<span>FTP</span>
+									</label>
+								</div>
+								<div class="col s4">
+									<label>
+										<input name="ftpMode" type="radio" value="FTPS" id="ftpModeFtps" />
+										<span>FTPS</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 
                 <div class="divider"></div>
                 <h6>Empfänger konfigurieren</h6>
