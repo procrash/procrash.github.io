@@ -2,7 +2,7 @@
  * service-worker.js
  * Service Worker für die Wildkamera SMS-Steuerung PWA mit detailliertem Debug-Logging
  */
-const CACHE_NAME = 'wildkamera-cache-v1.0.4';  // Versionsnummer erhöhen
+const CACHE_NAME = 'wildkamera-cache-v1.0.5';  // Versionsnummer erhöhen
 const ASSETS = [
   '/',
   '/index.html',
