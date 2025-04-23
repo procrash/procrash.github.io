@@ -121,6 +121,25 @@ async function openSettingsModal(camera) {
     const modal = M.Modal.getInstance(document.getElementById('settingsModal'));
     modal.open();
     
+	
+    // Warten, bis das Modal vollständig geöffnet ist
+    setTimeout(() => {
+        // Timepicker initialisieren
+        const timepickers = document.querySelectorAll('.timepicker');
+        timepickers.forEach(timepicker => {
+            let instance = M.Timepicker.getInstance(timepicker);
+            if (instance) {
+                instance.destroy();  // Vorherige Instanz zerstören, falls vorhanden
+            }
+            M.Timepicker.init(timepicker, {
+                twelveHour: false,
+                defaultTime: '08:00',
+                autoClose: true,
+                container: document.querySelector('body')
+            });
+        });	
+	
+	
     // SMS-Vorschau aktualisieren
     updateSmsPreview();
 }
