@@ -382,6 +382,7 @@ function setupLiveSettingsPreview() {
 	
 	// Initialisierung für das Max-Anzahl-Feld
 	setupMaxCountField();
+	initializeStatusTimepicker()
 
 }
 
