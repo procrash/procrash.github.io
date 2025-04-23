@@ -466,9 +466,18 @@ async function sendSettings() {
   
   const activeTab = getActiveTab();
   console.log('Active Tab:', activeTab);
+
+  text = ''
+  if (activeTab.href == "#generalSettings") {
+	text = buildSmsCommand('general');
+  } else if (activeTab.href == "#cameraSettings") {
+	text = buildSmsCommand('camera');
+  } else if (activeTab.href == ""#timerSettings"") {
+	text = buildSmsCommand('camera');
+  } else if (activeTab.href == "#recipientSettings") {
+	text = buildSmsCommand('email');
+  } 
   
-  
-  const text = buildSmsCommand('camera');
 
   if (sendMultiple==true) {
 
