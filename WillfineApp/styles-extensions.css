@@ -502,15 +502,3 @@ body.batch-mode .camera-checkbox {
   border-radius: 50%;
 }
 
-/* Am besten in styles-extensions.css einfügen */
-.timepicker-modal {
-  z-index: 1003 !important; /* Höher als der Hintergrund des Modals */
-}
-
-.timepicker-container {
-  z-index: 1004 !important;
-}
-
-.modal {
-  z-index: 1002 !important;
-}
