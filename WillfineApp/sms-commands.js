@@ -63,7 +63,7 @@ function createGeneralConfig() {
     }
     
     // Nicht dokumentierte Parameter mit Platzhalter
-    const placeholder = '?';
+    const placeholder = '0';
     
     return `$10*13#${smsControl}#${imageSize}#${maxCount}#${statusTime}#${placeholder}#${placeholder}#${mmsControl}#${smsRemoteControl}#${ftpSetting}#${placeholder}#${placeholder}#${placeholder}#${placeholder}$`;
 }
