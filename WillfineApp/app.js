@@ -459,8 +459,6 @@ function getActiveTab() {
 // Settings senden
 async function sendSettings() {
 
-	
-	
   const camera = cameras.find(c=>c.id===currentCameraId);
   if(!camera) return;
   const settings = getSettingsFromForm();
