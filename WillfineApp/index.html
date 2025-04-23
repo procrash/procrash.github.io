@@ -182,8 +182,7 @@
 		  </div>
 		</div>
 
-				<!-- Kamera-Einstellungen -->
-		<!-- Kamera -->
+		<!-- Kamera-Einstellungen -->
 		<div id="cameraSettings" class="settings-panel">
 
 	  <!-- Bewegungssensor -->
@@ -305,91 +304,50 @@
 	</div>
 
     <!-- Zeitplan -->
-            <div id="timerSettings" class="settings-panel">
-                <div class="setting-row">
-                    <span class="setting-label">Timer 1</span>
-                    <div class="setting-control">
-                        <div class="row" style="margin-bottom: 0;">
-                            <div class="col s5">
-                                <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-                                    <input id="timer1Start" type="text" class="timepicker" placeholder="Start">
-                                </div>
-                            </div>
-                            <div class="col s2 center-align" style="padding-top: 10px;">
-                                <span>An</span>
-                            </div>
-                            <div class="col s5">
-                                <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-                                    <input id="timer1End" type="text" class="timepicker" placeholder="Ende">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox" id="timer1Switch">
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
+    <div id="timerSettings" class="settings-panel">
+      <!-- Timer 1 -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Timer 1</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="timer1Switch" type="checkbox"><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5 setting-control">
+          <div class="row" style="margin-bottom:0;">
+            <div class="col s6"><input id="timer1Start" type="text" class="timepicker" placeholder="Start"></div>
+            <div class="col s6"><input id="timer1End"   type="text" class="timepicker" placeholder="Ende"></div>
+          </div>
+        </div>
+      </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Timer 2</span>
-                    <div class="setting-control">
-                        <div class="row" style="margin-bottom: 0;">
-                            <div class="col s5">
-                                <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-                                    <input id="timer2Start" type="text" class="timepicker" placeholder="Start">
-                                </div>
-                            </div>
-                            <div class="col s2 center-align" style="padding-top: 10px;">
-                                <span>An</span>
-                            </div>
-                            <div class="col s5">
-                                <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-                                    <input id="timer2End" type="text" class="timepicker" placeholder="Ende">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox" id="timer2Switch">
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
+      <!-- Timer 2 -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Timer 2</div>
+        <div class="col s2 center-align">
+          <div class="switch"><label><input id="timer2Switch" type="checkbox"><span class="lever"></span></label></div>
+        </div>
+        <div class="col s5 setting-control">
+          <div class="row" style="margin-bottom:0;">
+            <div class="col s6"><input id="timer2Start" type="text" class="timepicker" placeholder="Start"></div>
+            <div class="col s6"><input id="timer2End"   type="text" class="timepicker" placeholder="Ende"></div>
+          </div>
+        </div>
+      </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Verzögerung</span>
-                    <div class="setting-control">
-                        <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-                            <input id="delayTime" type="text" placeholder="00:00:00">
-                        </div>
-                    </div>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox" id="delaySwitch">
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
+      <!-- Verzögerung -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Verzögerung</div>
+        <div class="col s2 center-align"><div class="switch"><label><input id="delaySwitch" type="checkbox"><span class="lever"></span></label></div></div>
+        <div class="col s5 setting-control"><input id="delayTime" type="text" placeholder="00:00:00"></div>
+      </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Zeitraffer</span>
-                    <div class="setting-control">
-                        <div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-                            <input id="timelapseTime" type="text" placeholder="00:00:00">
-                        </div>
-                    </div>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox" id="timelapseSwitch">
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
+      <!-- Zeitraffer -->
+      <div class="row setting-row">
+        <div class="col s5 right-align setting-label">Zeitraffer</div>
+        <div class="col s2 center-align"><div class="switch"><label><input id="timelapseSwitch" type="checkbox"><span class="lever"></span></label></div></div>
+        <div class="col s5 setting-control"><input id="timelapseTime" type="text" placeholder="00:00:00"></div>
+      </div>
+    </div>
+
 
 
 
