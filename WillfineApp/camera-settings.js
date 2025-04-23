@@ -458,10 +458,5 @@ function fillSettingsForm(settings) {
         maxCountField.type = "text";
         maxCountField.removeAttribute("min");
         maxCountField.removeAttribute("max");
-    }
-    
-    // Restlicher bestehender Code...
-}
-	
-
+    }	
 }
