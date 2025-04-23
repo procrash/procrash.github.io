@@ -8,6 +8,7 @@ let currentCameraId = null;
 let cameras = [];
 let batchMode = false;
 let selectedIds = new Set();
+let sendMultiple = false
 
 // PWA-Funktionalität
 let deferredPrompt;
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	base = ""
 	baseSet = false
 	settingsShown = false
+	sendMultiple = false
 	
 	// Batch‑Actions (photo / delete / rename / settings) auf alle selectedIds
 	document.querySelectorAll('.batch-action').forEach(btn => {
@@ -127,32 +129,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 		case 'settings':
 			  // öffne Einstellungen‑Modal für alle Kameras nacheinander
 			  if (settingsShown == false) {
-				openSettingsModal(cam);
-				
-				// BEGINN Patch hier
-				// 1. Sammle alle Nummern der selektierten Kameras
-				const phones = Array.from(selectedIds)
-				  .map(id => {
-					const cam = cameras.find(c => c.id === id);
-					return cam && cam.phone;
-				  })
-				  .filter(Boolean);
-
-				if (phones.length) {
-				  // 2. Baue den sms:-Link (iOS/neuere Androids mit Komma getrennt)
-				  const recipients = phones.join(',');
-				  
-				  
-				  const smsLink = `sms:${recipients}?body=${encodeURIComponent(smsPreview.textContent)}`;
-
-				  // 3a. Direkt öffnen:
-				  window.location.href = smsLink;
-
-				  // — oder —
-				  // 3b. In einen <a id="batchSmsLink"> schreiben:
-				  // document.getElementById('batchSmsLink').href = smsLink;
-				}
-				
+				openSettingsModal(cam);		
+				sendMultiple = true
 			  }
 			  settingsShown=true
 			  
@@ -489,13 +467,47 @@ function updateSmsPreview() {
 
 // Settings senden
 async function sendSettings() {
+
+	
+	
   const camera = cameras.find(c=>c.id===currentCameraId);
   if(!camera) return;
   const settings = getSettingsFromForm();
   await dbManager.saveSettings(camera.id, settings);
   const text = buildSmsCommand('camera');
-  await smsManager.sendSms(camera.phone, text, camera.id);
-  M.toast({ html:'Einstellungen gesendet', classes:'toast-success' });
+
+  if (sendMultiple==true) {
+
+	// BEGINN Patch hier
+	// 1. Sammle alle Nummern der selektierten Kameras
+	const phones = Array.from(selectedIds)
+	  .map(id => {
+		const cam = cameras.find(c => c.id === id);
+		return cam && cam.phone;
+	  })
+	  .filter(Boolean);
+
+	if (phones.length) {
+	  // 2. Baue den sms:-Link (iOS/neuere Androids mit Komma getrennt)
+	  const recipients = phones.join(',');
+	  
+	  
+	  const smsLink = `sms:${recipients}?body=${encodeURIComponent(text)}`;
+
+	  // 3a. Direkt öffnen:
+	  window.location.href = smsLink;
+
+	  // — oder —
+	  // 3b. In einen <a id="batchSmsLink"> schreiben:
+	  // document.getElementById('batchSmsLink').href = smsLink;
+	}
+  } else {
+	    await smsManager.sendSms(camera.phone, text, camera.id);
+  }
+  sendMultiple = false
+
+
+ M.toast({ html:'Einstellungen gesendet', classes:'toast-success' });
   M.Modal.getInstance(document.getElementById('settingsModal')).close();
 }
 
