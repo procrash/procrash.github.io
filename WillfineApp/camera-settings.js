@@ -175,26 +175,26 @@ async function openSettingsModal(camera) {
     modal.open();
     
 	
-    // Warten, bis das Modal vollständig geöffnet ist
-    setTimeout(() => {
-        // Timepicker initialisieren
-        const timepickers = document.querySelectorAll('.timepicker');
-        timepickers.forEach(timepicker => {
-            let instance = M.Timepicker.getInstance(timepicker);
-            if (instance) {
-                instance.destroy();  // Vorherige Instanz zerstören, falls vorhanden
-            }
-            M.Timepicker.init(timepicker, {
-                twelveHour: false,
-                defaultTime: '08:00',
-                autoClose: true,
-                container: document.body
-            });
-        });
-        
-        // SMS-Vorschau aktualisieren
-        updateSmsPreview();
-    }, 300);
+	// Warten, bis das Modal vollständig geöffnet ist
+	setTimeout(() => {
+		// Timepicker initialisieren
+		const timepickers = document.querySelectorAll('.timepicker');
+		timepickers.forEach(timepicker => {
+			let instance = M.Timepicker.getInstance(timepicker);
+			if (instance) {
+				instance.destroy();  // Vorherige Instanz zerstören, falls vorhanden
+			}
+			M.Timepicker.init(timepicker, {
+				twelveHour: false,
+				defaultTime: '08:00',
+				autoClose: true,
+				container: 'body'  // Ändern Sie dies
+			});
+		});
+		
+		// SMS-Vorschau aktualisieren
+		updateSmsPreview();
+	}, 300);
 	
 }
 
@@ -509,6 +509,7 @@ function fillSettingsForm(settings) {
 		twelveHour: false,  // 24-Stunden-Format
 		defaultTime: '08:00',  // Standardzeit
 		autoClose: true,
+		container: 'body',  // Ändern Sie dies
 		onSelect: function(hour, minute) {
 			// Optional: Callback wenn Zeit ausgewählt wurde
 			updateSmsPreview();
