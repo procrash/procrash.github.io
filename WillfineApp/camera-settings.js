@@ -137,11 +137,12 @@ async function openSettingsModal(camera) {
                 autoClose: true,
                 container: document.querySelector('body')
             });
-        });	
+        });
+        
+        // SMS-Vorschau aktualisieren
+        updateSmsPreview();
+    }, 300);
 	
-	
-    // SMS-Vorschau aktualisieren
-    updateSmsPreview();
 }
 
 /**
