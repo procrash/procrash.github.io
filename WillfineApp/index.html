@@ -153,35 +153,37 @@
                     </div>
                 </div>
 
-                <div class="setting-row">
-                    <span class="setting-label">Täglicher Statusbericht</span>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox" id="statusReportSwitch">
-                            <span class="lever"></span>
-                        </label>
-                    </div>
-                    <div class="setting-control">
-						<div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-							<input id="statusTime" type="text" class="timepicker" placeholder="HH:MM">
-							<!--span class="helper-text" data-error="Ungültige Zeit">24-Stunden-Format (z.B. 08:00)</span-->
-						</div>
-                    </div>
-                </div>
-
 				<div class="setting-row">
-					<span class="setting-label">Max. Anzahl</span>
-					<div class="setting-control">
-						<div class="input-field" style="margin-top: 0; margin-bottom: 0;">
-							<!-- Ändere den type von "text" zu "number" und füge min/max Attribute hinzu -->
-							<input id="maxCount" type="text" value="Kein Limit">
+					<div class="setting-label-container">
+						<span class="setting-label">Täglicher Statusbericht</span>
+						<div class="switch" style="margin-left: 10px;">
+							<label>
+								<input type="checkbox" id="statusReportSwitch">
+								<span class="lever"></span>
+							</label>
 						</div>
 					</div>
-					<div class="switch" style="margin-left: 10px;">
-						<label>
-							<input type="checkbox" id="maxCountSwitch">
-							<span class="lever"></span>
-						</label>
+					<div class="setting-control">
+						<div class="input-field" style="margin-top: 0; margin-bottom: 0;">
+							<input id="statusTime" type="text" class="timepicker" placeholder="HH:MM">
+						</div>
+					</div>
+				</div>
+
+				<div class="setting-row">
+					<div class="setting-label-container">
+						<span class="setting-label">Max. Anzahl</span>
+						<div class="switch" style="margin-left: 10px;">
+							<label>
+								<input type="checkbox" id="maxCountSwitch">
+								<span class="lever"></span>
+							</label>
+						</div>
+					</div>
+					<div class="setting-control">
+						<div class="input-field" style="margin-top: 0; margin-bottom: 0;">
+							<input id="maxCount" type="text" value="Kein Limit">
+						</div>
 					</div>
 				</div>
                 <div class="setting-row">
