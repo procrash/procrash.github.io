@@ -315,3 +315,33 @@ window.cameraSettings = {
     setupLiveSettingsPreview,
     updateSmsPreview
 };    
+
+/**
+ * Füllt das Einstellungsformular mit den gegebenen Einstellungen
+ * @param {Object} settings - Objekt mit den Kameraeinstellungen
+ */
+function fillSettingsForm(settings) {
+    // Durchlaufe alle Properties im settings-Objekt
+    for (const [key, value] of Object.entries(settings)) {
+        const element = document.getElementById(key);
+        
+        // Wenn Element existiert, setze den Wert entsprechend dem Typ
+        if (element) {
+            if (element.type === 'checkbox') {
+                element.checked = Boolean(value);
+            } else {
+                element.value = value;
+            }
+        }
+    }
+    
+    // Aktualisiere Materialize-Komponenten
+    M.updateTextFields();
+    M.FormSelect.init(document.querySelectorAll('select'));
+    
+    // Aktualisiere ggf. angezeigten Wert für Serienbilder
+    const burstSlider = document.getElementById('burstImages');
+    if (burstSlider) {
+        document.getElementById('burstImagesValue').textContent = burstSlider.value + 'P';
+    }
+}
