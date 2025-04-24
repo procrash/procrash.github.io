@@ -68,7 +68,10 @@
                     </select><label>Kameratyp</label></div>
             </div>
         </div>
-        <div class="modal-footer"><a class="modal-close waves-effect waves-light btn-flat" href="#">Abbrechen</a><a id="saveCameraButton" class="waves-effect waves-light btn" href="#">Speichern</a></div>
+        <div class="modal-footer">
+			<a class="modal-close waves-effect waves-light btn-flat" href="#">Abbrechen</a>
+			<a id="saveCameraButton" class="waves-effect waves-light btn" href="#">Speichern</a>
+		</div>
     </div> <!-- Einstellungen Modal -->
     <div id="settingsModal" class="modal modal-fixed-footer">
         <div class="modal-content">
@@ -334,12 +337,15 @@
                     <div class="col s10 setting-control"><input id="email4" type="email" placeholder="E‑Mail"></div>
                 </div>
             </div>
+        </div>
+        <div class="modal-footer">
             <div class="sms-preview">
                 <div class="sms-preview-title">SMS Vorschau:</div>
                 <div id="smsPreviewText">Die SMS-Vorschau wird hier angezeigt</div>
             </div>
-        </div>
-        <div class="modal-footer"><a class="modal-close waves-effect waves-light btn-flat" href="#">Abbrechen</a><a id="sendSettingsButton" class="waves-effect waves-light btn" href="#">SMS senden</a></div>
+			<a class="modal-close waves-effect waves-light btn-flat" href="#">Abbrechen</a>
+			<a id="sendSettingsButton" class="waves-effect waves-light btn" href="#">SMS senden</a>
+		</div>
     </div> <!-- Scripts -->
 	<script>
 	  if ('serviceWorker' in navigator) {
