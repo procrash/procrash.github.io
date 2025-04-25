@@ -71,7 +71,7 @@ class SmsManager {
             // SMS URL-Schema öffnen
             window.location.href = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
 
-            M.toast({ html: 'SMS gesendet über: URL', displayLength: 4000 });
+            M.toast({ html: 'SMS gesendet über: URL '+window.location.href, displayLength: 4000 });
 
             // Wir können nicht sicher wissen, ob der Benutzer die SMS tatsächlich gesendet hat,
             // aber wir können annehmen, dass der Versuch erfolgreich war, wenn keine Exception geworfen wurde
