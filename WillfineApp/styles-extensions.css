@@ -631,7 +631,13 @@ bottom:auto;      /* überschreibt bottom:45px; aus Materialize */
     gap:8px;
   }
 
-
+/* SMS-Vorschau nur im Stand-alone-Modus der PWA ausblenden */
+@media (display-mode: standalone) {
+    /* nur der Text — nimm stattdessen .sms-preview, wenn du die ganze Box verbergen willst */
+    #smsPreviewText {
+      display: none !important;
+    }
+  }
 
 
 
