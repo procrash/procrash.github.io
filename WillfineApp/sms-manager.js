@@ -57,6 +57,8 @@ class SmsManager {
                     message: message
                 });
                 
+                M.toast({ html: 'SMS gesendet über: Web SMS API', displayLength: 4000 });
+
                 return result.success;
             } catch (error) {
                 console.warn('Web SMS API nicht unterstützt oder Fehler:', error);
@@ -68,7 +70,9 @@ class SmsManager {
         try {
             // SMS URL-Schema öffnen
             window.location.href = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
-            
+
+            M.toast({ html: 'SMS gesendet über: URL', displayLength: 4000 });
+
             // Wir können nicht sicher wissen, ob der Benutzer die SMS tatsächlich gesendet hat,
             // aber wir können annehmen, dass der Versuch erfolgreich war, wenn keine Exception geworfen wurde
             return true;
@@ -85,6 +89,9 @@ class SmsManager {
                     url: `sms:${phoneNumber}`
                 });
                 
+
+                M.toast({ html: 'SMS gesendet WEB API', displayLength: 4000 });
+
                 // Auch hier können wir nicht sicher wissen, ob die SMS gesendet wurde
                 return true;
             } catch (error) {
@@ -96,6 +103,8 @@ class SmsManager {
                 return false;
             }
         }
+
+        M.toast({ html: 'SMS gesendet über ---', displayLength: 4000 });
 
         // Wenn keine Methode funktioniert hat
         console.error('Keine Methode zum Senden von SMS verfügbar');
