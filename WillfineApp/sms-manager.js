@@ -70,7 +70,14 @@ class SmsManager {
         try {
             // SMS URL-Schema öffnen
             const refText = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
-            window.location.href = refText;
+
+
+            const link = document.createElement('a');
+            link.href = refText;
+            link.target = '_blank';
+            link.click();
+
+            //window.location.href = refText;
 
             M.toast({ html: 'SMS gesendet über: URL '+refText, displayLength: 4000 });
 
