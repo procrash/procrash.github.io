@@ -604,11 +604,12 @@ body.batch-mode .camera-checkbox {
     width: 100%;
 }
 
-.add-button{
-right:16px;       /* Abstand vom rechten Rand */
-bottom:45px;      /* überschreibt bottom:45px; aus Materialize */
-}
-  
+.add-button {
+    position: fixed;       /* Fixed positioning to stay in place when scrolling */
+    right: 16px;           /* Distance from right edge */
+    bottom: 16px;          /* Distance from bottom (changed from 45px to standard 16px) */
+    z-index: 1000;         /* Ensures button appears above other elements */
+  }  
 
 
 /* --- Footer-Layout ------------------------------------------------------ */
