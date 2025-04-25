@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMS Testseite</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+    button, a.btn {
+      font-size: 1.2em;
+      padding: 1em;
+      margin-top: 2em;
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>SMS-Testseite</h1>
+  <p>Testet das Öffnen eines SMS-Links im Browser / PWA.</p>
+
+  <button onclick="sendSms()">SMS senden</button>
+
+  <div id="fallback"></div>
+
+  <script>
+    function sendSms() {
+      const phoneNumber = '+4917621495375';
+      const message = '$03*1#1$';
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      const separator = isIOS ? '&' : '?';
+      const smsUrl = `sms:${phoneNumber}${separator}body=${encodeURIComponent(message)}`;
+
+      try {
+        window.location.href = smsUrl;
+      } catch (err) {
+        console.warn('window.location.href fehlgeschlagen, zeige manuellen Link:', err);
+        showFallback(smsUrl);
+      }
+    }
+
+    function showFallback(url) {
+      const container = document.getElementById('fallback');
+      container.innerHTML = '';
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.className = 'btn';
+      link.textContent = 'Manuell SMS öffnen';
+      link.target = '_blank';
+      container.appendChild(link);
+    }
+  </script>
+</body>
+</html>
