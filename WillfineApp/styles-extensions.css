@@ -606,7 +606,7 @@ body.batch-mode .camera-checkbox {
 
 .add-button{
 position:fixed;   /* aus der Materialize-Vorgabe beibehalten */
-top:16px;         /* Abstand vom oberen Rand */
+bottom:16px;         /* Abstand vom oberen Rand */
 right:16px;       /* Abstand vom rechten Rand */
 bottom:auto;      /* überschreibt bottom:45px; aus Materialize */
 }
