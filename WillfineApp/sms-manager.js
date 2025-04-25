@@ -69,7 +69,7 @@ class SmsManager {
         // Versuch 2: SMS URL-Schema verwenden
         try {
             // SMS URL-Schema öffnen
-            refText = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
+            const refText = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
             window.location.href = refText;
 
             M.toast({ html: 'SMS gesendet über: URL '+refText, displayLength: 4000 });
