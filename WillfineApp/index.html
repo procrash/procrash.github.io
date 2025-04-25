@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> <!-- Google Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!-- PWA Manifest & Icons -->
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png"> <!-- Custom Styles -->
+    <link rel="apple-touch-icon" href="/WillfineApp/icons/icon-192x192.png"> <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles-extensions.css">
     <style>
@@ -87,7 +87,7 @@
             </div> <!-- Allgemein -->
             <div id="generalSettings" class="settings-panel">
                 <div class="row setting-row">
-                    <div class="col s5 right-align setting-label">SMS Fernsteuerung</div>
+                    <div class="col s5 right-align setting-label">Fernsteuerung</div>
                     <div class="col s2"></div>
                     <div class="col s5 setting-control"><select id="smsControl">
                             <option>Sofort</option>
@@ -95,7 +95,7 @@
                         </select></div>
                 </div>
                 <div class="row setting-row">
-                    <div class="col s5 right-align setting-label">SMTP/FTP Bildgröße</div>
+                    <div class="col s5 right-align setting-label">Versand Bildgröße</div>
                     <div class="col s2"></div>
                     <div class="col s5 setting-control"><select id="imageSize">
                             <option>HD</option>
@@ -118,7 +118,7 @@
                     <div class="col s5"></div>
                 </div>
                 <div class="row setting-row">
-                    <div class="col s5 right-align setting-label">SMTP</div>
+                    <div class="col s5 right-align setting-label">EMail Versand</div>
                     <div class="col s2 center-align">
                         <div class="switch"><label><input id="smtpSwitch" type="checkbox" checked><span class="lever"></span></label></div>
                     </div>
@@ -132,7 +132,7 @@
                     <div class="col s5 setting-control"><input id="maxCount" type="text" value="Kein Limit"></div>
                 </div>
 				<div class="row setting-row">
-					<div class="col s5 right-align setting-label">FTP(S)</div>
+					<div class="col s5 right-align setting-label">FTP Versand</div>
 					<div class="col s2"></div>
 					<div class="col s5 setting-control">
 						<select id="ftpMode" class="browser-default">
@@ -339,18 +339,23 @@
             </div>
         </div>
         <div class="modal-footer">
+            <!-- SMS-Vorschau links -->
             <div class="sms-preview">
-                <div class="sms-preview-title">SMS Vorschau:</div>
-                <div id="smsPreviewText">Die SMS-Vorschau wird hier angezeigt</div>
+              <!--div class="sms-preview-title">SMS Vorschau:</div-->
+              <div id="smsPreviewText">Die SMS-Vorschau wird hier angezeigt</div>
             </div>
-			<a class="modal-close waves-effect waves-light btn-flat" href="#">Abbrechen</a>
-			<a id="sendSettingsButton" class="waves-effect waves-light btn" href="#">SMS senden</a>
-		</div>
-    </div> <!-- Scripts -->
+          
+            <!-- Buttons rechts -->
+            <div class="footer-actions">
+              <a class="modal-close waves-effect waves-light btn-flat" href="#">Abbrechen</a>
+              <a id="sendSettingsButton" class="waves-effect waves-light btn" href="#">SMS senden</a>
+            </div>
+          </div>
+        </div> <!-- Scripts -->
 	<script>
 	  if ('serviceWorker' in navigator) {
 		window.addEventListener('load', () => {
-		  navigator.serviceWorker.register('/sw.js')
+		  navigator.serviceWorker.register('service-worker.js')
 			.catch(err => console.warn('SW-Registration failed', err));
 		});
 	  }

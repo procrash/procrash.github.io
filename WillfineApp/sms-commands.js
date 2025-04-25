@@ -25,6 +25,8 @@ const VIDEO_RESOLUTION_MAP = {
  * @returns {string} - Formatiertes Kommando
  */
 function createGeneralConfig() {
+    const cameraType = document.getElementById('cameraType').value; // → "24MP" oder "32MP"
+
     const smsControl = document.getElementById('smsControl').value === 'Sofort' ? 1 : 0;
     
     let imageSize = 2; // Original (Standard)
@@ -48,29 +50,30 @@ function createGeneralConfig() {
     const statusTime = statusActive ? document.getElementById('statusTime').value : 'OFF';
     
     // MMS Fernsteuerung
-    const mmsControl = document.getElementById('mmsControlSwitch').checked ? 1 : 0;
-    
-    // SMS Fernsteuerung
-    const smsRemoteControl = 1; // Immer aktiviert
+    mmsControl = document.getElementById('mmsControlSwitch').checked ? 1 : 0;
+    if (cameraType=="32MP") {
+        mmsControl = 1;
+    }
+
+    // Send Mails
+    const smtpActive = document.getElementById('smtpSwitch').checked ? 1: 0; 
     
     // FTP-Einstellungen
-	let ftpSetting = 0;
-	const selectedFtpMode = document.querySelector('input[name="ftpMode"]:checked');
-	if (selectedFtpMode) {
-		switch (selectedFtpMode.value) {
-			case 'FTP':
-				ftpSetting = 1;
-				break;
-			case 'FTPS':
-				ftpSetting = 2;
-				break;
-		}
-	}
+    let ftpSetting = 0;                          // Standard = AUS
+    const ftpModeVal = document.getElementById('ftpMode').value;
+    switch (ftpModeVal) {
+        case 'FTP':
+            ftpSetting = 1;
+            break;
+        case 'FTPS':
+            ftpSetting = 2;
+            break;
+    }
     
     // Nicht dokumentierte Parameter mit Platzhalter
     const placeholder = '0';
     
-    return `$10*13#${smsControl}#${imageSize}#${maxCount}#${statusTime}#${placeholder}#${placeholder}#${mmsControl}#${smsRemoteControl}#${ftpSetting}#${placeholder}#${placeholder}#${placeholder}#${placeholder}$`;
+    return `$10*13#${smsControl}#${imageSize}#${maxCount}#${statusTime}#${placeholder}#${placeholder}#${mmsControl}#${smtpActive}#${ftpSetting}#${placeholder}#${placeholder}#${placeholder}#${placeholder}$`;
 }
 
 /**
@@ -91,10 +94,13 @@ function setPhoneNumbers() {
  * @returns {string} - Formatiertes Kommando
  */
 function setEmailAddresses() {
-    const email1 = document.getElementById('email1').value || '0';
+    const email1 = document.getElementById('email1').value || '';
+    const email2 = document.getElementById('email2').value || '';
+    const email3 = document.getElementById('email3').value || '';
+    const email4 = document.getElementById('email4').value || '';
     
     // Weitere E-Mail-Adressen könnten hier hinzugefügt werden, wenn UI-Elemente vorhanden sind
-    const emails = [email1, '0', '0', '0', '0', '0', '0', '0'];
+    const emails = [email1, email2, email3, email4, '0', '0', '0', '0'];
     
     return `$08*8#${emails.join('#')}$`;
 }
@@ -369,8 +375,10 @@ function buildSmsCommand(commandType) {
             return setPhoneNumbers();
         case 'camera':
             return createDetailedConfig();
+        case 'timer':
+            return createDetailedConfig();
         case 'image_only':
-            return createImageOnlyConfig();
+        return createImageOnlyConfig();
         case 'video_only':
             return createVideoOnlyConfig();
         case 'image_video':

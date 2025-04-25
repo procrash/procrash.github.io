@@ -611,3 +611,27 @@ right:16px;       /* Abstand vom rechten Rand */
 bottom:auto;      /* überschreibt bottom:45px; aus Materialize */
 }
   
+
+
+/* --- Footer-Layout ------------------------------------------------------ */
+.modal-footer{
+    display:flex;            /* alle Kinder in einer Zeile */
+    align-items:center;      /* vertikal zentriert */
+    justify-content:space-between;  /* Platz zwischen Vorschau & Buttons */
+    gap:16px;                /* etwas Luft */
+  }
+  
+  .modal-footer .sms-preview{
+    margin-right:auto;       /* schiebt die Buttons ganz nach rechts */
+    text-align:left;         /* linksbündiger Vorschau-Text */
+  }
+  
+  .footer-actions{           /* optional für Button-Gruppe */
+    display:flex;
+    gap:8px;
+  }
+
+
+
+
+

@@ -38,7 +38,7 @@ const APP_CONFIG = {
             },
             defaultSettings: {
                 captureMode: "Bild",
-                pirSensitivity: "Hoch",
+                pirSensitivity: "L7",
                 videoLength: "5s"
             }
         },

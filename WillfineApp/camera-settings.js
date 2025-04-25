@@ -77,6 +77,20 @@ function setupMaxCountField() {
         maxCountSwitch.checked = true;
     }
     
+    // Neuer Event Listener zum Löschen des Feldes beim Klick
+    maxCountField.addEventListener('click', function() {
+        // Nur löschen, wenn der Switch aktiviert ist
+        if (maxCountSwitch.checked) {
+            if (this.value === "Kein Limit") {
+                this.value = "";
+            }
+        } else {
+            // Wenn Switch nicht aktiviert, keine Aktion
+            this.value = "Kein Limit";
+            return false;
+        }
+    });
+
     // Event Listener für das Switch-Element
     maxCountSwitch.addEventListener('change', function() {
         if (this.checked) {
@@ -89,14 +103,14 @@ function setupMaxCountField() {
             maxCountField.max = "99";
         } else {
             // Wenn deaktiviert, setze auf "Kein Limit"
-            maxCountField.value = "Kein Limit";
             maxCountField.type = "text";
+            maxCountField.value = "Kein Limit";
             maxCountField.removeAttribute("min");
             maxCountField.removeAttribute("max");
         }
         // Aktualisiere die SMS-Vorschau
         updateSmsPreview();
-    });
+    });    
     
     // Event Listener für Eingabevalidierung
     maxCountField.addEventListener('input', function() {
@@ -162,12 +176,14 @@ async function openSettingsModal(camera) {
         
         // Kameratyp-spezifische Anpassungen vornehmen
         adjustSettingsBasedOnCameraType(camera.type);
+        setupLiveSettingsPreview();
     } catch (error) {
         console.error('Fehler beim Laden der Einstellungen:', error);
         // Standardwerte setzen
         initializeSettingsForm();
         // Kameratyp-spezifische Anpassungen vornehmen
         adjustSettingsBasedOnCameraType(camera.type);
+
     }
     
     // Modal öffnen
@@ -207,6 +223,7 @@ function adjustSettingsBasedOnCameraType(cameraType) {
     const elements = {
         // Allgemeine Einstellungen
         mmsControl: document.getElementById('mmsControlSwitch'),
+        mmsControlRow: document.getElementById('mmsControlSwitch').closest('.setting-row'),
         ftpMode: document.getElementById('ftpMode'),
         
         // Kamera-Einstellungen
@@ -216,43 +233,60 @@ function adjustSettingsBasedOnCameraType(cameraType) {
         
         // Timer-Einstellungen
         timerSettings: document.getElementById('timerSettings'),
-        timelapseSwitch: document.getElementById('timelapseSwitch')
+        timelapseSwitch: document.getElementById('timelapseSwitch'),
+
+        // Phone-Einträge
+        phoneFields: [
+            document.getElementById('phone1'),
+            document.getElementById('phone2'),
+            document.getElementById('phone3'),
+            document.getElementById('phone4')
+        ]
     };
     
     // Standardkonfiguration (alle Funktionen eingeschränkt)
-    if (cameraType === 'Standard') {
-        // Einschränkungen für Standardmodell
-        elements.mmsControl.disabled = true;
-        elements.mmsControl.parentElement.parentElement.classList.add('disabled-setting');
-        
+    if (cameraType === '24MP') {
+        // Standardeinstellungen für 24MP Modell
+        elements.mmsControl.disabled = false;
+        elements.mmsControlRow.style.display = 'flex';        
+
         // Begrenze Videoauflösung
-        limitSelectOptions(elements.videoRes, ['HD-1280x720', 'WVGA-848x480']);
+        // limitSelectOptions(elements.videoRes, ['HD-1280x720', 'WVGA-848x480']);
         // Begrenze Bildauflösung
-        limitSelectOptions(elements.imageRes, ['12MP', '8MP', '5MP']);
+        limitSelectOptions(elements.imageRes, ['24MP', '12MP', '8MP', '5MP']);
         
         // Standardwerte setzen
-        elements.videoRes.value = 'HD-1280x720';
-        elements.imageRes.value = '12MP';
+        //elements.videoRes.value = 'HD-1280x720';
+        elements.imageRes.value = '24MP';
         
         // Timer-Optionen einschränken
-        elements.timelapseSwitch.disabled = true;
-        elements.timelapseSwitch.parentElement.parentElement.parentElement.classList.add('disabled-setting');
+        // elements.timelapseSwitch.disabled = true;
+        // elements.timelapseSwitch.parentElement.parentElement.parentElement.classList.add('disabled-setting');
+
+        // Phone-Felder wieder sichtbar machen
+        elements.phoneFields.forEach(field => {
+            const parentRow = field.closest('.setting-row');
+            if (parentRow) {
+                parentRow.style.display = 'flex';
+            }
+        });
     }
     // Pro-Modell (mittlere Funktionalität)
-    else if (cameraType === 'Pro') {
+    else if (cameraType === '32MP') {
         // Pro-Modell hat Zugriff auf mehr Optionen
-        elements.mmsControl.disabled = false;
-        elements.mmsControl.parentElement.parentElement.classList.remove('disabled-setting');
-        
+        elements.mmsControl.disabled = true;
+        elements.mmsControlRow.style.display = 'none';
+
         // Erweiterte Videoauflösung
-        resetSelectOptions(elements.videoRes, [
-            {value: 'FHD-1920x1080', text: 'FHD-1920x1080'},
-            {value: 'HD-1280x720', text: 'HD-1280x720'},
-            {value: 'WVGA-848x480', text: 'WVGA-848x480'}
-        ]);
+        //resetSelectOptions(elements.videoRes, [
+        //    {value: 'FHD-1920x1080', text: 'FHD-1920x1080'},
+        //    {value: 'HD-1280x720', text: 'HD-1280x720'},
+        //    {value: 'WVGA-848x480', text: 'WVGA-848x480'}
+        //]);
         
         // Erweiterte Bildauflösung
         resetSelectOptions(elements.imageRes, [
+            {value: '32M', text: '32M'},
             {value: '24M', text: '24M'},
             {value: '12MP', text: '12MP'},
             {value: '8MP', text: '8MP'},
@@ -260,8 +294,16 @@ function adjustSettingsBasedOnCameraType(cameraType) {
         ]);
         
         // Timer-Optionen freischalten
-        elements.timelapseSwitch.disabled = false;
-        elements.timelapseSwitch.parentElement.parentElement.parentElement.classList.remove('disabled-setting');
+        // elements.timelapseSwitch.disabled = false;
+        // elements.timelapseSwitch.parentElement.parentElement.parentElement.classList.remove('disabled-setting');
+
+        // Phone-Felder unsichtbar machen
+        elements.phoneFields.forEach(field => {
+            const parentRow = field.closest('.setting-row');
+            if (parentRow) {
+                parentRow.style.display = 'none';
+            }
+        });
     }
     // Max-Modell (volle Funktionalität)
     else if (cameraType === 'Max') {
@@ -348,6 +390,55 @@ function resetSelectOptions(selectElement, options) {
     }
 }
 
+
+function setupCaptureModeHandler() {
+    const captureModeSelect = document.getElementById('captureMode');
+    const sendVideoSwitch = document.getElementById('sendVideoSwitch');
+    const sendImageSwitch = document.getElementById('sendImageSwitch')
+
+    captureModeSelect.addEventListener('change', function() {
+        // Wenn Aufnahmemodus "Bild" ist
+        if (this.value === 'Bild') {
+            // Deaktiviere den Versand Video Switch
+            sendVideoSwitch.checked = false;
+        }
+        // Wenn Aufnahmemodus "Bild" ist
+        if (this.value === 'Video') {
+            // Deaktiviere den Versand Video Switch
+            sendImageSwitch.checked = false;
+        }
+    });
+
+    // Optional: Umgekehrte Logik - wenn Video-Versand aktiviert wird, 
+    // stelle sicher, dass nicht nur Bild-Modus aktiv ist
+    sendVideoSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            const captureMode = captureModeSelect.value;
+            if (captureMode === 'Bild') {
+                // Ändere den Capture-Modus zu 'P+V' oder 'Video'
+                captureModeSelect.value = 'P+V';
+                
+                // Materialize Select neu initialisieren
+                M.FormSelect.init(captureModeSelect);
+            }
+        }
+    });
+
+    sendImageSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            const captureMode = captureModeSelect.value;
+            if (captureMode === 'Video') {
+                // Ändere den Capture-Modus zu 'P+V' oder 'Video'
+                captureModeSelect.value = 'P+V';
+                
+                // Materialize Select neu initialisieren
+                M.FormSelect.init(captureModeSelect);
+            }
+        }
+    });
+
+}
+
 // ------ Live-Vorschau für Einstellungsänderungen ------
 
 /**
@@ -383,6 +474,7 @@ function setupLiveSettingsPreview() {
 	// Initialisierung für das Max-Anzahl-Feld
 	setupMaxCountField();
 	initializeStatusTimepicker()
+    setupCaptureModeHandler();
 
 }
 
@@ -431,6 +523,9 @@ function updateSmsPreview() {
             break;
         case 'timerSettings':
             previewText = buildSmsCommand('timer');
+            break;
+        case 'recipientSettings':
+            previewText = buildSmsCommand('email');
             break;
         default:
             previewText = buildSmsCommand('general');

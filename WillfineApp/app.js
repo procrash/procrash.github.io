@@ -18,11 +18,15 @@ const installButton = document.getElementById('installButton');
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('Service Worker registriert:', reg))
-      .catch(err => console.error('Service Worker Registrierung fehlgeschlagen:', err));
+      .then(reg => {
+        console.log('Service Worker registered successfully:', reg);
+        console.log('Scope:', reg.scope);
+      })
+      .catch(err => {
+        console.error('Service Worker registration failed:', err);
+      });
   });
 }
-
 // Funktion zum Update-Check
 function checkForServiceWorkerUpdate() {
   if ('serviceWorker' in navigator) {
@@ -67,6 +71,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   document.getElementById('batchActionBar').classList.add('hide');
 
+
+  // Existing tab initialization
+  const tabElements = document.querySelectorAll('.tabs');
+  const tabInstances = M.Tabs.init(tabElements, {
+    // Add an onShow callback to regenerate SMS preview when switching tabs
+    onShow: function(selectedTab) {
+      // Call the updateSmsPreview function to regenerate the command
+      updateSmsPreview();
+    }
+  });
 
 	// ganz unten in Deinem DOMContentLoaded‑Callback
 	const batchBar = document.getElementById('batchActionBar');
@@ -194,6 +208,11 @@ function openCameraModal(camera = null) {
   document.getElementById('modalTitle').textContent = camera ? 'Kamera umbenennen' : 'Kamera hinzufügen';
   document.getElementById('cameraName').value  = camera ? camera.name : '';
   document.getElementById('cameraPhone').value = camera ? camera.phone : '';
+
+  const typeSelect = document.getElementById('cameraType');
+  typeSelect.value = camera ? camera.type : '24MP';   // Fallback-Wert
+  M.FormSelect.init(typeSelect);
+
   currentCameraId = camera ? camera.id : null;
   M.Modal.getInstance(document.getElementById('cameraModal')).open();
 }
@@ -254,10 +273,13 @@ function updateBatchBar() {
 }
 
 
-// Einzeilige UI für eine Kamera ohne Typ-Anzeige
 function addCameraToUI(camera) {
   const list = document.getElementById('cameraList');
-  const item = document.createElement('div'); item.className = 'camera-list-item'; item.dataset.id = camera.id;
+  const item = document.createElement('div'); 
+  item.className = 'camera-list-item'; 
+  item.dataset.id = camera.id;
+  item.dataset.type = camera.type;  // Add the camera type as a data attribute
+
   item.innerHTML = `
     <div class="camera-list-header">
       <div class="camera-info">
@@ -270,12 +292,41 @@ function addCameraToUI(camera) {
       <i class="material-icons camera-action" data-action="photo">photo</i>
       <i class="material-icons camera-action" data-action="delete">delete</i>
     </div>`;
+  
   list.appendChild(item);
   setupCameraActions(item, camera);
   
-  // Am Ende von addCameraToUI:
-item.addEventListener('click', () => {
-  // Batch-Mode automatisch aktivieren
+  item.addEventListener('click', () => {
+    // Always allow selection if batch mode is not active
+    if (!batchMode) {
+      batchMode = true;
+    }
+
+    // Get the type of the clicked camera
+    const clickedCameraType = item.dataset.type;
+    
+    // If selectedIds is empty, always allow selection
+    if (selectedIds.size === 0) {
+      selectCamera(item, camera);
+    } else {
+      // Check if the clicked camera type matches the first selected camera's type
+      const firstSelectedCameraType = 
+        document.querySelector(`.camera-list-item[data-id="${Array.from(selectedIds)[0]}"]`).dataset.type;
+      
+      if (clickedCameraType === firstSelectedCameraType) {
+        selectCamera(item, camera);
+      } else {
+        // Show a toast message about type mismatch
+        M.toast({ 
+          html: 'Nur Kameras des gleichen Typs können gemeinsam ausgewählt werden', 
+          classes: 'toast-error' 
+        });
+      }
+    }
+  });
+}
+
+function selectCamera(item, camera) {
   batchMode = true;
   item.classList.toggle('selected');
   if (item.classList.contains('selected')) {
@@ -284,9 +335,6 @@ item.addEventListener('click', () => {
     selectedIds.delete(camera.id);
   }
   updateBatchBar();
-});
-
-
 }
 
 // Aktionen für Kamera-Items
@@ -332,7 +380,7 @@ function initializeSettingsForm() {
   // Default-Werte in einem Objekt
   const defaults = {
     smsControl:        'Täglich',
-    imageSize:         'Original',
+    imageSize:         'HD',
     statusTime:        '00:00',
     statusReportSwitch: true,
     maxCount:          'Kein Limit',
