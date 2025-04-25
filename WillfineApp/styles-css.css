@@ -138,13 +138,6 @@ nav {
     background-color: var(--primary-dark);
 }
 
-.add-button {
-    position: fixed;
-    bottom: 70px; /* Über der Bottom Navigation */
-    right: 24px;
-    z-index: 10;
-}
-
 /* Bottom Navigation */
 .bottom-nav {
     position: fixed;
