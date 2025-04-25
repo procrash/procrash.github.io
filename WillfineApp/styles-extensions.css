@@ -640,3 +640,16 @@ body.batch-mode .camera-checkbox {
 
 
 
+/* Modal-Titel „Kamera-Einstellungen“ kleiner darstellen  */
+#cameraModal #modalTitle {
+    font-size: 1.3rem;      /* ≈ 20 px, Materialize-Standard ist 2.28 rem */
+    line-height: 1.4;       /* etwas enger, optional */
+    font-weight: 500;       /* optional: etwas leichter als default */
+}
+
+/* styles-extensions.css */
+html {
+    /* Standard‐Browserwert ist 16 px → 100 %.  
+       87.5 % ≈ 14 px, 93.75 % ≈ 15 px. */
+    font-size: 93.75%;     /* ~15 px → alles ~6 % kleiner */
+}
